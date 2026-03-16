@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+
+{% block title %}Friends{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="card card-glow flex-card bg-transparent p-5 top-50 start-50 translate-middle-x text-light"
+        style="backdrop-filter: blur(10px);">
+        <h2>Friend Requests</h2>
+        {% if friend_requests_count > 0 %}
+        <p>You have {{ friend_requests_count }} friend request(s).</p>
+        <a href="{{ url_for('friends.friend_request') }}" class="btn btn-primary">View friend requests</a>
+        {% else %}
+        <p>No friend requests.</p>
+        {% endif %}
+
+        <h2>Friends</h2>
+        <a href="{{ url_for('friends.search_usernames') }}" class="btn btn-primary">Search Friends</a>
+        <div class="row">
+            {% if friends %}
+                {% for friend in friends %}
+                    <div class="col-md-4">
+                        <a href="{{ url_for('friends.view_friend', user_id=friend['UserId']) }}" class="normal-link">
+                            <div class="card mb-3">
+                                <div class="card-body" style="text-align: center;">
+                                    <img src="{{ url_for('profile.uploads', filename=friend['Picture']) }}"
+                                        alt="{{ friend['Username'] }}"
+                                        style="width:100px; height: 100px; margin: auto; object-fit: cover; border-radius: 50%;">
+                                    <h2>{{ friend['UserName'] }}</h2>
+                                    <h4>Level {{ friend['Level'] }}</h4>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+{% block content %}
+    <h1>Register</h1>
+    <form method="POST" action="{{ url_for('register') }}">
+        {{ signup_form.csrf_token }}
+        <div class="main_container">
+            {% with messages = get_flashed_messages() %}
+                {% if messages %}
+                    <ul class="flashes">
+                    {% for message in messages %}
+                        <li>{{ message }}</li>
+                    {% endfor %}
+                </ul>
+                {% endif %}
+            {% endwith %}
+            {{ signup_form.username(class="form_input_field", placeholder="Enter username") }}
+            {{ signup_form.firstname(class="form_input_field", placeholder="Enter firstname") }}
+            {{ signup_form.lastname(class="form_input_field", placeholder="Enter lastname") }}
+            {{ signup_form.email(class="form_input_field", placeholder="Enter email") }}
+            {{ signup_form.password(class="form_input_field", placeholder="Enter password") }}
+            {{ signup_form.confirm(class="form_input_field", placeholder="Confirm password") }}
+            {{ signup_form.age(class="form_input_field", placeholder="Enter age")}}
+            <button type="submit" class="form_input_button">Register</button>
+        </div>
+    </form>
+{% endblock %}

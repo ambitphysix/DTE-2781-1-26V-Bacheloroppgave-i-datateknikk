@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+
+{% block title %}Edit Profile{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="card card-glow flex-card bg-transparent p-5 top-50 start-50 translate-middle-x text-light"
+        style="backdrop-filter: blur(10px);">
+        <h1>Edit {{ current_user.UserName }}'s Profile</h1>
+        <form method="POST" action="{{ url_for('profile.edit') }}" enctype="multipart/form-data" class="mt-4">
+            {{ form.hidden_tag() }}
+
+            <div class="mb-3">
+                {{ form.picture.label }}
+                {% if current_user.Pic %}
+                    <img src="{{ url_for('profile.uploads', filename=current_user.Picture) }}" alt="Current Profile Picture" class="img-fluid mb-2" style="max-width: 250px; max-height: 250px;">
+                    <br>
+                {% endif %}
+                {{ form.picture(class="form-control") }}
+            </div>
+
+            <div class="mb-3">
+                {{ form.firstname.label }}
+                {{ form.firstname(class="form-control") }}
+            </div>
+
+            <div class="mb-3">
+                {{ form.lastname.label }}
+                {{ form.lastname(class="form-control") }}
+            </div>
+            <button type="submit" class="btn btn-primary">Update Profile</button>
+        </form>
+    </div>
+</div>
+{% endblock %}

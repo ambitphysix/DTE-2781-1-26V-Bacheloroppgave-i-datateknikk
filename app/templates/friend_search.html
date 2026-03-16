@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+
+{% block title %}Find friends{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="card card-glow flex-card bg-transparent p-5 top-50 start-50 translate-middle-x text-light"
+        style="backdrop-filter: blur(10px);">
+        <form action="{{ url_for('friends.search_usernames') }}" method="POST" class="row g-3 pb-3">
+            {{ form.hidden_tag() }}
+            <h4>{{ form.search_term.label }}</h4>
+            <div class="col-auto">
+                {{ form.search_term(size=25, placeholder="Enter username...", class="form-control") }}
+            </div>
+            <div class="col-auto">
+                <button type="submit" class="btn btn-primary">Search</button>
+            </div>
+        </form>
+
+        <div class="row">
+            {% if users_found %}
+                {% for user in users_found %}
+                <div class="col-md-4">
+                    <div class="card mb-3">
+                        <div class="card-body" style="text-align: center;">
+                            <img src="{{ url_for('profile.uploads', filename=user['Picture']) }}" alt="{{ user['Username'] }}" style="width:50px;">
+                            <h4>{{ user['Username'] }}</h4>
+                            <form action="{{ url_for('friends.handle_send_friend_request') }}" method="POST">
+                                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                <input type="hidden" name="user_to_id" value="{{ user['UserId'] }}">
+                                <button type="submit" class="btn btn-outline-primary">Send friend request</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            {% else %}
+                <p>No users found.</p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

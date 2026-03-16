@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ attraction.AttractionName }}{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="card card-glow flex-card bg-transparent p-5 top-50 start-50 translate-middle-x text-light"
+        style="backdrop-filter: blur(10px);">
+        <h1>{{ attraction.AttractionName }}</h1>
+        <div class="card px-3 pt-3">
+            <img src="{{ url_for('static', filename='img/' + attraction.Picture) }}" style="max-width: 500px; max-height: 500px; border-radius: 2%;" alt="{{ attraction.Picture }}">
+            <strong>Attraction Type:</strong> {{ attraction.TypeName }}
+            <strong>Description:</strong> {{ attraction.Description }}
+            <strong>Suitable for age between:</strong> {{ attraction.AgeFrom }} - {{ attraction.AgeTo }}
+            <strong>Address:</strong> {{ attraction.Address }}
+            <strong>Location:</strong> {{ attraction.Location }}
+        </div>
+        <div>
+            {% if attraction.Latitude and attraction.Longitude %}
+            <iframe width="100%" height="300" frameborder="0" style="border:0"
+                src="https://maps.google.com/maps?q={{ attraction.Latitude }},{{ attraction.Longitude }}&output=embed"
+                allowfullscreen>
+            </iframe>
+            {% else %}
+                <p>Location not available.</p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+{% endblock %}

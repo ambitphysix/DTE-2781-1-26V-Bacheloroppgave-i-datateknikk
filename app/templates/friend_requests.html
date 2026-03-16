@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+
+{% block title %}Friends{% endblock %}
+
+{% block content %}
+
+<div class="container">
+    <div class="card card-glow flex-card bg-transparent p-5 top-50 start-50 translate-middle-x text-light"
+        style="backdrop-filter: blur(10px);">
+    <h2>Friend Requests</h2>
+    <div class="row">
+        {% if friend_requests %}
+        {% for new_friend in friend_requests %}
+        <div class="col-md-4">
+            <div class="card mb-3">
+                <div class="card-body" style="text-align: center;">
+                    <div class="media">
+                        <img src="{{ url_for('profile.uploads', filename=new_friend['Picture']) }}"
+                            alt="{{ new_friend['Username'] }}"
+                            style="width: 100px; height: 100px; border-radius: 50%; object-fit: cover;">
+                        <div class="media-body">
+                            <h5 class="mt-0">{{ new_friend['UserName'] }}</h5>
+                            <form action="{{ url_for('friends.handle_accept_friend_request') }}" method="POST">
+                                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                <input type="hidden" name="user_from_id" value="{{ new_friend['UserId'] }}">
+                                <button type="submit" class="btn btn-success btn-sm mr-1"
+                                    style="margin-top: 15px;width: 70%;">Accept</button>
+                            </form>
+                            <form action="{{ url_for('friends.handle_remove_friend_request') }}" method="POST">
+                                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                <input type="hidden" name="user_from_id" value="{{ new_friend['UserId'] }}">
+                                <button type="submit" class="btn btn-danger btn-sm ml-1"
+                                    style="margin-top: 15px;width: 70%;">Decline</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+        {% else %}
+        <div class="col-md-12">
+            <p>No friend requests.</p>
+        </div>
+        {% endif %}
+    </div>
+    </div>
+</div>
+
+{% endblock %}

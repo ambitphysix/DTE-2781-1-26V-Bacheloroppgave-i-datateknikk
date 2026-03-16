@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container">
+    <div class="card card-glow flex-card bg-transparent p-5 top-50 start-50 translate-middle-x text-light"
+        style="backdrop-filter: blur(10px);">
+        <h1>Achievements</h1>
+        <br>
+        <div>
+            <h3>Achievements obtained by {{ current_user.UserName }}</h3>
+            <br>
+            {% if achievements_obtained %}
+                {% for row in achievements_obtained %}
+                    <div class="card mb-3">
+                        <div class="row">
+                            <div class="col-md-4 d-flex justify-content-center align-items-center">
+                                <img src="{{ url_for('static', filename='img/' + row.Picture) }}" class="img-fluid rounded-start" alt="Achievement Picture" style="height: 100px; margin-bottom: 2px; margin-top: 2px;">
+                            </div>
+                            <div class="col-md-8">
+                                <div class="card-body">
+                                    <h5 class="card-title">{{ row.AchievementName }}</h5>
+                                    <p class="card-text">{{ row.Description }}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            {% else %}
+            <p>You have not earned any achievements yet.</p>
+            {% endif %}
+        </div>
+        <div>
+            <br>
+            <br>
+            <h3>Achievements not obtained by {{ current_user.UserName }}</h3>
+            <br>          
+            {% for row in achievements_not_obtained %}
+                <div class="card mb-3">
+                    <div class="row">
+                        <div class="col-md-4 d-flex justify-content-center align-items-center">
+                            <img src="{{ url_for('static', filename='img/' + row.Picture) }}" style="max-width: 100px; max-height: 100px; margin-bottom: 2px; margin-top: 2px;" alt="Achievement Picture"/>
+                        </div>
+                        <div class="col-md-8">
+                            <div class="card-body">
+                                <h5 class="card-title"> {{ row.AchievementName }} </h5>
+                                <p class="card-text"> {{ row.Description }} </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,261 @@
+{% extends 'base.html' %}
+
+{% block title %}Moderator Panel{% endblock %}
+
+{% block content %}
+
+<div class="container">
+    <div class="card card-glow flex-card bg-transparent p-5 top-50 start-50 translate-middle-x "
+        style="backdrop-filter: blur(10px);">
+        <h1 class="text-light">Moderator Panel</h1>
+        {% if moderator_choice == "Flag" %}
+        <div class="pagination" style="display: flex; justify-content: center;">
+            {% if page > 1 %}
+            <form action="{{ url_for('admin.admin') }}" method="GET" style="display: inline;">
+                <input type="hidden" name="moderator_choice" value="{{ moderator_choice }}">
+                <input type="hidden" name="order" value="{{ order }}">
+                <input type="hidden" name="page" value="1">
+                <button type="submit" class="btn btn-primary">&#11164&#11164</button>
+            </form>
+            <form action="{{ url_for('admin.admin') }}" method="GET" style="display: inline;">
+                <input type="hidden" name="moderator_choice" value="{{ moderator_choice }}">
+                <input type="hidden" name="order" value="{{ order }}">
+                <input type="hidden" name="page" value="{{ page-1 }}">
+                <button type="submit" class="btn btn-primary">Previous</button>
+            </form>
+            {% endif %}
+            {% if page * per_page < total_users %} <form action="{{ url_for('admin.admin') }}" method="GET"
+                style="display: inline;">
+                <input type="hidden" name="moderator_choice" value="{{ moderator_choice }}">
+                <input type="hidden" name="order" value="{{ order }}">
+                <input type="hidden" name="page" value="{{ page+1 }}">
+                <button type="submit" class="btn btn-primary">Next</button>
+                </form>
+                <form action="{{ url_for('admin.admin') }}" method="GET" style="display: inline;">
+                    <input type="hidden" name="moderator_choice" value="{{ moderator_choice }}">
+                    <input type="hidden" name="order" value="{{ order }}">
+                    <input type="hidden" name="page" value="{{ (total_users // per_page) + 1 }}">
+                    <button type="submit" class="btn btn-primary">&#11166&#11166</button>
+                </form>
+                {% endif %}
+        </div>
+        <div class="table-responsive">
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="col-auto">
+                        <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                            Select Order
+                        </button>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="#" onclick="changeOrder(1)">Username &#11183;</a></li>
+                            <li><a class="dropdown-item" href="#" onclick="changeOrder(2)">Username &#11181;</a></li>
+                            <li><a class="dropdown-item" href="#" onclick="changeOrder(3)">Name &#11183;</a></li>
+                            <li><a class="dropdown-item" href="#" onclick="changeOrder(4)">Name &#11181;</a></li>
+                            <li><a class="dropdown-item" href="#" onclick="changeOrder(5)">Reason &#11183;</a></li>
+                            <li><a class="dropdown-item" href="#" onclick="changeOrder(6)">Reason &#11181;</a></li>
+                            <li><a class="dropdown-item" href="#" onclick="changeOrder(7)">Flagged By &#11183;</a></li>
+                            <li><a class="dropdown-item" href="#" onclick="changeOrder(8)">Flagged By &#11181;</a></li>
+                        </ul>
+                
+                        <form action="{{ url_for('admin.admin', moderator_choice=moderator_choice) }}" method="POST" class="row g-3 pb-3">
+                            {{ search_form.csrf_token }}
+                            <div class="col-auto">
+                                {{ search_form.search_term(size=25, placeholder="Enter username...", class="form-control") }}
+                            </div>
+                            <div class="col-auto">
+                                <button type="submit" class="btn btn-primary">Search</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                {% for user in Users %}
+                {% if user.UserId != current_user.UserId %}
+                <div class="col-md-4">
+                    <div class="card mb-3">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ user.UserName }}</h5>
+                            <p class="card-text">{{ user.FirstName }} {{ user.LastName }}</p>
+                            <form action="/admin/flagged" method="POST">
+                                {{ form.csrf_token }}
+                                <div class="dropdown">
+                                    <select name="reason" class="btn dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false" style="outline: 1px solid #000;">
+                                        <option value="None"></option>
+                                        <option value="2" {% if user.Reason=='2' %} selected {% endif %}>Inappropriate
+                                            Content
+                                        </option>
+                                        <option value="3" {% if user.Reason=='3' %} selected {% endif %}>Spam</option>
+                                        <option value="4" {% if user.Reason=='4' %} selected {% endif %}>Harassment</option>
+                                        <option value="5" {% if user.Reason=='5' %} selected {% endif %}>Other</option>
+                                    </select>
+                                    <input type="hidden" name="uid" value="{{ user.UserId }}">
+                                    <input type="hidden" name="username" value="{{ user.UserName }}">
+                                    <input type="hidden" name="email" value="{{ user.Email }}">
+                                    <input type="hidden" name="who" value="{{ current_user.UserName }}">
+                                    <input type="hidden" name="page" value="{{ page }}">
+                                    <input type="hidden" name="order" value="{{ order }}">
+                                    {% if user.Flagged == 1 %}
+                                    <input type="hidden" name="value" value="0">
+                                    <button type="submit" name="flag" class="btn btn-outline-danger">Unflag User</button>
+                                    {% else %}
+                                    <input type="hidden" name="value" value="1">
+                                    <button type="submit" name="flag" class="btn btn-outline-primary">Flag User</button>
+                                    {% endif %}
+                                    {% if user.Flagged == 1 %}
+                                </div>
+                                <p class="card-text text-danger">Flagged by: {{ user.WhoFlagged }}</p>
+                                <div>
+                                    {% endif %}
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+                {% endfor %}
+            </div>
+        </div>
+        {% elif moderator_choice == "Moderator" %}
+        <div class="pagination" style="display: flex; justify-content: center;">
+            {% if page > 1 %}
+            <form action="{{ url_for('admin.admin') }}" method="GET" style="display: inline;">
+                <input type="hidden" name="moderator_choice" value="{{ moderator_choice }}">
+                <input type="hidden" name="order" value="{{ order }}">
+                <input type="hidden" name="page" value="1">
+                <button type="submit" class="btn btn-primary">&#11164&#11164</button>
+            </form>
+            <form action="{{ url_for('admin.admin') }}" method="GET" style="display: inline;">
+                <input type="hidden" name="moderator_choice" value="{{ moderator_choice }}">
+                <input type="hidden" name="order" value="{{ order }}">
+                <input type="hidden" name="page" value="{{ page-1 }}">
+                <button type="submit" class="btn btn-primary">Previous</button>
+            </form>
+            {% endif %}
+            {% if page * per_page < total_users %} <form action="{{ url_for('admin.admin') }}" method="GET"
+                style="display: inline;">
+                <input type="hidden" name="moderator_choice" value="{{ moderator_choice }}">
+                <input type="hidden" name="order" value="{{ order }}">
+                <input type="hidden" name="page" value="{{ page+1 }}">
+                <button type="submit" class="btn btn-primary">Next</button>
+                </form>
+                <form action="{{ url_for('admin.admin') }}" method="GET" style="display: inline;">
+                    <input type="hidden" name="moderator_choice" value="{{ moderator_choice }}">
+                    <input type="hidden" name="order" value="{{ order }}">
+                    <input type="hidden" name="page" value="{{ (total_users // per_page) + 1 }}">
+                    <button type="submit" class="btn btn-primary">&#11166&#11166</button>
+                </form>
+                {% endif %}
+                <br>
+        </div>
+        <div class="table-responsive">
+            <div class="btn-group pb-3 row g-3 pb-3">
+                <div class="col-auto">
+                    <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                    Select Order
+                    </button>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="#" onclick="changeOrder(1, 'Username &#9660;')">Username &#9660;</a></li>
+                        <li><a class="dropdown-item" href="#" onclick="changeOrder(2, 'Username &#9650;')">Username &#9650;</a></li>
+                        <li><a class="dropdown-item" href="#" onclick="changeOrder(3, 'Name &#9660;')">Name &#9660;</a></li>
+                        <li><a class="dropdown-item" href="#" onclick="changeOrder(4, 'Name &#9650;')">Name &#9650;</a></li>
+                        <li><a class="dropdown-item" href="#" onclick="changeOrder(9, 'Role &#9660;')">Role &#9660;</a></li>
+                        <li><a class="dropdown-item" href="#" onclick="changeOrder(10, 'Role &#9650;')">Role &#9650;</a></li>
+                    </ul>
+                </div>
+                <form action="{{ url_for('admin.admin', moderator_choice=moderator_choice) }}" method="POST" class="row g-3 pb-3">
+                    {{ search_form.csrf_token }}
+                    <div class="col-auto">
+                        {{ search_form.search_term(size=25, placeholder="Enter username...", class="form-control") }}
+                    </div>
+                    <div class="col-auto">
+                        <button type="submit" class="btn btn-primary">Search</button>
+                    </div>
+                </form>
+            </div>
+            <div class="row">
+                {% for user in Users %}
+                {% if user.UserId != current_user.UserId %}
+                <div class="col-md-4 ms-auto">
+                    <div class="card mb-3">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ user.UserName }}</h5>
+                            <p class="card-text">{{ user.FirstName }} {{ user.LastName }}</p>
+                            <p class="card-text">
+                                {% if user.RoleId == 2 %}
+                            <p class="card-text text-success">Moderator</p>
+                            {% endif %}
+                            </p>
+                            <form action="/admin/rights" method="POST">
+                                {{ form.csrf_token }}
+                                <input type="hidden" name="uid" value="{{ user.UserId }}">
+                                <input type="hidden" name="username" value="{{ user.UserName }}">
+                                <input type="hidden" name="email" value="{{ user.Email }}">
+                                <input type="hidden" name="who" value="{{ current_user.UserName }}">
+                                <input type="hidden" name="page" value="{{ page }}">
+                                <input type="hidden" name="reason" value="5">
+                                <input type="hidden" name="order" value="{{ order }}">
+                                {% if user.RoleId == 2 %}
+                                <input type="hidden" name="value" value="1">
+                                <button type="submit" name="admin" class="btn btn-outline-danger">Remove Moderator</button>
+                                {% else %}
+                                <input type="hidden" name="value" value="2">
+                                <button type="submit" name="admin" class="btn btn-outline-primary">Add Moderator</button>
+                                {% endif %}
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</div>
+</div>
+<script>
+    function changeOrder(newOrder) {
+        // Create a form element
+        var form = document.createElement('form');
+
+        // Set the form attributes
+        form.setAttribute('method', 'GET');
+        form.setAttribute('action', '{{ url_for("admin.admin") }}');
+        form.setAttribute('style', 'display: inline;');
+
+        // Create hidden input for moderator_choice
+        var adminChoiceInput = document.createElement('input');
+        adminChoiceInput.setAttribute('type', 'hidden');
+        adminChoiceInput.setAttribute('name', 'moderator_choice');
+        adminChoiceInput.setAttribute('value', '{{ moderator_choice }}');
+
+        // Create hidden input for page
+        var pageInput = document.createElement('input');
+        pageInput.setAttribute('type', 'hidden');
+        pageInput.setAttribute('name', 'page');
+        pageInput.setAttribute('value', '{{ page }}');
+
+        // Create hidden input for order
+        var orderInput = document.createElement('input');
+        orderInput.setAttribute('type', 'hidden');
+        orderInput.setAttribute('name', 'order');
+        orderInput.setAttribute('value', newOrder);
+
+        // Append inputs to the form
+        form.appendChild(adminChoiceInput);
+        form.appendChild(orderInput);
+        form.appendChild(pageInput);
+
+        // Append the form to the document body
+        document.body.appendChild(form);
+
+        // Submit the form
+        form.submit();
+
+        // Optional: Remove the form from the DOM
+        document.body.removeChild(form);
+    }
+</script>
+
+{% endblock %}

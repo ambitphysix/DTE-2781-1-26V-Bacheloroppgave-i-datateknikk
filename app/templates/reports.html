@@ -1,0 +1,121 @@
+{% extends 'base.html' %}
+
+{% block title %}Reports{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="card card-glow flex-card bg-transparent p-5 top-50 start-50 translate-middle-x"
+        style="backdrop-filter: blur(10px);">
+        <h1 class="text-light">Generate reports</h1>
+
+        <div class="center">
+            <form action="{{ url_for('admin.reports') }}" method="GET">
+                <button type="submit" name="report_choice" value="User">User Statistics</button>
+                <button type="submit" name="report_choice" value="Achievement">Achievement Statistics</button>
+                <button type="submit" name="report_choice" value="Attractions">Attraction Statistics</button>
+            </form>
+
+        </div>
+        {% if report_choice == "User" %}
+        <h2 class="text-light">User Statistics</h2>
+        <div class="button-container">
+            <form action="{{ url_for('admin.download_csv') }}" method="GET">
+                <button type="submit" name="download" value="User">Download CSV</button>
+            </form>
+        </div>
+        <h3 class="text-light">Table shows only users with at least 1 attraction visit.</h3>
+
+        <div class="attractionTable">
+            <table class="text-light">
+                <thead>
+                    <tr>
+                        <th>Username</th>
+                        <th>Friends</th>
+                        <th>Attractions</th>
+                        <th>Achievements</th>
+                        <th>Achievement points</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for user in statistics %}
+                    <tr>
+                        <td>{{ user.UserName }}</td>
+                        <td>{{ user.NumFriends }}</td>
+                        <td>{{ user.NumAttractionVisits }}</td>
+                        <td>{{ user.NumAchievementsUnlocked }}</td>
+                        <td>{{ user.TotalAchievementPoints }}</td>
+
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+
+        {% endif %}
+
+
+        {% if report_choice == "Achievement" %}
+        <h2 class="text-light">Achievement Statistics</h2>
+        <div class="button-container">
+            <form action="{{ url_for('admin.download_csv') }}" method="GET">
+                <button type="submit" name="download" value="Achievement">Download Achievement Statistics CSV</button>
+            </form>
+        </div>
+        <div class="attractionTable">
+            <table class="text-light">
+                <thead>
+                    <tr>
+                        <th>Achievement ID</th>
+                        <th>Achievement Name</th>
+                        <th>Count</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for achievement in statistics %}
+                    <tr>
+                        <td>{{ achievement.AchievementId }}</td>
+                        <td>{{ achievement.AchievementName }}</td>
+                        <td>{{ achievement.AchievedCount }}</td>
+
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% endif %}
+
+
+        {% if report_choice == "Attractions" %}
+        <h2 class="text-light">Attraction Statistics</h2>
+        <div class="button-container">
+            <form action="{{ url_for('admin.download_csv') }}" method="GET">
+                <button type="submit" name="download" value="Attraction">Download Attraction Statistics CSV</button>
+            </form>
+        </div>
+        <div class="attractionTable">
+            <table class="text-light">
+                <thead>
+                    <tr>
+                        <th>Attraction ID</th>
+                        <th>Attraction Name</th>
+                        <th>Visits</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for attraction in statistics %}
+                    <tr>
+                        <td>{{ attraction.AttractionId }}</td>
+                        <td>{{ attraction.AttractionName }}</td>
+                        <td>{{ attraction.VisitCount }}</td>
+
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+{% endblock %}

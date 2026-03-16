@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+
+{% block title %}Discover Bodø{% endblock %}
+
+{% block content %}
+<style>
+    .flex-card {
+        width: 100%;
+        max-width: 800px;
+    }
+</style>
+<div class="position-relative">
+    {% if current_user.is_authenticated %}
+    <div class="card card-glow flex-card bg-transparent p-5 position-absolute top-50 start-50 translate-middle-x"
+        style="backdrop-filter: blur(10px);">
+        <h1 class="text-center text-light">Welcome back, {{ current_user.UserName }}!</h1>
+        <p class="text-light">Enjoy exploring the enchanting attractions in Bodø with your personalized
+            experience.</p>
+    </div>
+    {% else %}
+    <div class="card card-glow flex-card bg-transparent p-5 position-absolute top-50 start-50 translate-middle-x"
+        style="backdrop-filter: blur(10px);">
+        <h1 class="text-center text-light">Welcome to Discover Bodø!</h1>
+        <p class="text-light">
+            Explore the enchanting attractions in Bodø, a city surrounded by stunning natural beauty and rich cultural
+            heritage.
+            Whether you're a nature lover, history enthusiast, or someone seeking adventure, Bodø has something for
+            everyone.
+        </p>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

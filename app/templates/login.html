@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+
+{% block title %}Log in{% endblock %}
+
+{% block content %}
+<style>
+    :root {
+        --glow-color: #9ecaed;
+        --glow-size: 10px;
+    }
+
+    .card-glow {
+        box-shadow: 0 0 var(--glow-size) var(--glow-color);
+    }
+
+    .flex-card {
+        width: 100%;
+        max-width: 500px;
+    }
+
+    .form-control-plaintext {
+        border-bottom: 1px solid whitesmoke;
+        border-top: 0;
+        border-left: 0;
+        border-right: 0;
+        border-radius: 0;
+    }
+</style>
+<div class="container">
+    <div class="card card-glow flex-card bg-transparent p-5 top-50 start-50 translate-middle-x" style="backdrop-filter: blur(10px);">
+        <h1 class="card-title text-light">Log in</h1>
+        <form method="POST" action="{{ url_for('auth.login') }}">
+            {{ form.hidden_tag() }}
+            <br>
+            <div class="form-group">
+                {{ form.username.label(class="form-label text-light") }}
+                {{ form.username(class="form-control form-control-plaintext bg-transparent text-light") }}
+                {% for error in form.username.errors %}
+                <span class="text-danger">{{ error }}</span>
+                {% endfor %}
+            </div>
+            <div class="form-group">
+                {{ form.password.label(class="form-label text-light") }}
+                {{ form.password(class="form-control form-control-plaintext bg-transparent text-light") }}
+                {% for error in form.password.errors %}
+                <span class="text-danger">{{ error }}</span>
+                {% endfor %}
+            </div>
+            <br>
+            <button type="submit" class="btn btn-primary">Login</button>
+        </form>
+    </div> 
+</div>
+{% endblock %}

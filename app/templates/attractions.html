@@ -1,0 +1,120 @@
+{% extends 'base.html' %}
+
+{% block title %}Attractions{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="card card-glow flex-card bg-transparent p-5 top-50 start-50 translate-middle-x "
+        style="backdrop-filter: blur(10px);">
+
+
+        <h1>Attractions</h1>
+
+        <div class="table">
+            <div class="btn-group">
+                <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                    Select Attraction Type
+                </button>
+                <ul class="dropdown-menu dropdown-menu-right">
+                    <li><a class="dropdown-item" href="/attractions?attractiontype=all">All Attractions</a></li>
+                    {% for Type in attractionTypes %}
+                    <li><a class="dropdown-item" href="/attractions?attractiontype={{ Type.attractionType }}">{{ Type.attractionType }}</a></li>
+                    {% endfor %}
+                </ul>
+            </div>
+            <div class="btn-group">
+                <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                    Sort by
+                </button>
+                <ul class="dropdown-menu">
+                    <li><a class="dropdown-item" href="/attractions?attractiontype={{ request.args.get('attractiontype') }}&filtertype={{ request.args.get('filtertype') }}&sortby=Popularity">Popularity</a></li>
+                </ul>
+            </div>
+        </div>
+        <br>
+        {% if current_user.is_authenticated %}
+        <form class="pb-3" action="/attractions" method="GET" style="width: fit-content; float: right;">
+            <input type="hidden" name="attractiontype" value="{{ request.args.get('attractiontype') }}">
+            <input type="hidden" name="sortby" value="{{ request.args.get('sortby') }}">
+            <div style="display: inline-block; margin-right: 10px;">
+                <label for="lower_age">Lower Age:</label>
+                <input class="form-control" type="number" id="lower_age" name="lower_age" min="0">
+            </div>
+            <div style="display: inline-block;">
+                <label for="upper_age">Upper Age:</label>
+                <input class="form-control" type="number" id="upper_age" name="upper_age" max="99">
+            </div>
+            <button type="submit" class="btn btn-primary" name="filtertype" value="agefilter">Filter by
+                age</button>
+        </form>
+        {% endif %}
+        <br>
+        <br>
+        <div class="pagination pb-3" style="display: flex; justify-content: center;">
+            {% if page > 1 %}
+            <form action="{{ url_for('attractions.attractions') }}" method="GET" style="display: inline;">
+                <input type="hidden" name="attractiontype" value="{{ request.args.get('attractiontype') }}">
+                <input type="hidden" name="filtertype" value="{{  request.args.get('filtertype')  }}">
+                <input type="hidden" name="lower_age" value="{{  request.args.get('lower_age')  }}">
+                <input type="hidden" name="upper_age" value="{{  request.args.get('upper_age')  }}">
+                <input type="hidden" name="page" value="1">
+                <button type="submit" class="btn btn-primary">&#11164&#11164</button>
+            </form>
+            <form action="{{ url_for('attractions.attractions') }}" method="GET" style="display: inline;">
+                <input type="hidden" name="attractiontype" value="{{ request.args.get('attractiontype') }}">
+                <input type="hidden" name="filtertype" value="{{  request.args.get('filtertype')  }}">
+                <input type="hidden" name="lower_age" value="{{  request.args.get('lower_age')  }}">
+                <input type="hidden" name="upper_age" value="{{  request.args.get('upper_age')  }}">
+                <input type="hidden" name="page" value="{{ page-1 }}">
+                <button type="submit" class="btn btn-primary">Previous</button>
+            </form>
+            {% endif %}
+            {% if page * per_page < total_attraction %} <form action="{{ url_for('attractions.attractions') }}"
+                method="GET" style="display: inline;">
+                <input type="hidden" name="attractiontype" value="{{ request.args.get('attractiontype') }}">
+                <input type="hidden" name="filtertype" value="{{  request.args.get('filtertype')  }}">
+                <input type="hidden" name="lower_age" value="{{  request.args.get('lower_age')  }}">
+                <input type="hidden" name="upper_age" value="{{  request.args.get('upper_age')  }}">
+                <input type="hidden" name="page" value="{{ page+1 }}">
+                <button type="submit" class="btn btn-primary">Next</button>
+                </form>
+                <form action="{{ url_for('attractions.attractions') }}" method="GET" style="display: inline;">
+                    <input type="hidden" name="attractiontype" value="{{ request.args.get('attractiontype') }}">
+                    <input type="hidden" name="filtertype" value="{{  request.args.get('filtertype')  }}">
+                    <input type="hidden" name="lower_age" value="{{  request.args.get('lower_age')  }}">
+                    <input type="hidden" name="upper_age" value="{{  request.args.get('upper_age')  }}">
+                    <input type="hidden" name="page" value="{{ (total_attraction // per_page) + 1 }}">
+                    <button type="submit" class="btn btn-primary">&#11166&#11166</button>
+                </form>
+                {% endif %}
+        </div>
+        <div class="attractionTable">
+            <div class="card-columns">
+                {% for attraction in attractions %}
+                {% if not current_user.hide_visited_attractions or not attraction.Visited %}
+                <div class="card mb-3">
+                    <div class="card-body">
+                        <h5 class="card-title"><a href="{{ url_for('attractions.page', attraction_id=attraction.AttractionId) }}" class="normal-link">{{ attraction.AttractionName }}</a></h5>
+                        <p class="card-text">{{ attraction.Description }}</p>
+                        <p class="card-text">Suitable for age: {{ attraction.AgeFrom }} - {{ attraction.AgeTo }}</p>
+                        <p class="card-text">{{ attraction.Address }}</p>
+                        {% if attraction.Visited %}
+                        <button class="btn btn-secondary" disabled>Visited</button>
+                        {% else %}
+                        <form action="{{ url_for('attractions.visit') }}" method="post">
+                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                            <input type="hidden" name="attractionId" value="{{ attraction.AttractionId }}">
+                            <input type="hidden" name="currentType" value="{{ attraction.TypeName }}">
+                            <button class="btn btn-primary" type="submit">Visit</button>
+                        </form>
+                        {% endif %}
+                    </div>
+                </div>
+                {% endif %}
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

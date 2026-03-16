@@ -1,0 +1,123 @@
+{% extends 'base.html' %}
+
+{% block title %}Profile{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="card card-glow flex-card bg-transparent p-5 top-50 start-50 translate-middle-x text-light"
+        style="backdrop-filter: blur(10px);">
+        <h1>{{ User.UserName }}'s Profile</h1>
+        <div class="row">
+            <div class="col-lg-4 d-flex align-items-center flex-column text-center my-auto">
+                {% if User.Picture %}
+                <img src="{{ url_for('profile.uploads', filename=User.Picture) }}" alt="User Picture"
+                    style="max-width: 250px; max-height: 250px; margin-bottom: 5px; border-radius: 50%;">
+                {% else %}
+                <p>No picture available</p>
+                {% endif %}
+
+                {% if current_user.UserId == User.UserId %}
+                <nav style="margin:0;">
+                    <a href="{{ url_for('profile.edit') }}" class="btn btn-primary" style="margin-top: 15px;">Edit
+                        Profile</a>
+                </nav>
+                <br>
+                <form method="POST" action="{{ url_for('profile.newsletter') }}">
+                    {{ news_form.csrf_token }}
+                    {% if current_user.Newsletter == 1 %}
+                    <input type="hidden" name="newsletter" value="0">
+                    <button type="submit" class="btn btn-primary">Unsubscribe Newsletter</button>
+                    {% else %}
+                    <input type="hidden" name="newsletter" value="1">
+                    <button type="submit" class="btn btn-primary">Subscribe Newsletter</button>
+                    {% endif %}
+                </form>
+                <br>
+                <!-- Toggle hide visited attractions button -->
+                <form action="{{ url_for('profile.toggle_hide_visited_attractions') }}" method="post"
+                    style="display:inline;">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                    <button type="submit" class="btn btn-primary">
+                        {% if current_user.hide_visited_attractions %}
+                        Show visited attractions
+                        {% else %}
+                        Hide visited attractions
+                        {% endif %}
+                    </button>
+                </form>
+                <!-- End of toggle hide visited attractions button -->
+                {% endif %}
+            </div>
+
+            <!-- User information -->
+            <div class="col-lg-4 d-flex align-items-center flex-column text-center my-auto">
+                <!-- Level progress -->
+                <div class="card m-2">
+                    <div class="card-body">
+                        <h5 class="card-title">Level {{ User.level }}</h5>
+                        <progress value="{{ User.level_fraction }}" max="1"></progress>
+                        <h6 class="card-subtitle text-muted">{{ (User.level_fraction*100)|round|int }}% completed</h6>
+                    </div>
+                </div>
+
+                <ul class="list-unstyled">
+                    <li><strong>First Name:</strong> {{ User.FirstName }}</li>
+                    <li><strong>Last Name:</strong> {{ User.LastName}}</li>
+                    <li><strong>Age:</strong> {{ User.Age }}</li><br>
+                </ul>
+
+                {% if current_user.UserId == User.UserId %}
+                <!-- Find friends button -->
+                <a href="{{ url_for('friends.search_usernames') }}" class="btn btn-primary">Search Friends</a>
+                <!-- Show friends button -->
+                <a href="{{ url_for('friends.friends') }}" class="btn btn-primary" style="margin-top: 15px;">Friends</a>
+                {% endif %}
+            </div>
+
+            <!-- Recent attraction visits -->
+            {% if not User.hide_visited_attractions %}
+            <div class="col-lg-4 text-center">
+                <h2>My recent visits</h2>
+                <div>
+                    {% for attraction_visit in attraction_visits %}
+                    <div class="card m-2">
+                        <div class="card-body">
+                            <a href="{{ url_for('attractions.page', attraction_id=attraction_visit.attraction_id) }}"
+                                class="normal-link">{{ attraction_visit.attraction_name }}</a>
+                            <h6 class="card-subtitle text-muted">{{ attraction_visit.time_difference_as_string }}</h6>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div><!-- End of recent attraction visits -->
+            {% endif %}
+
+            <div>
+                <h3>Achievements</h3>
+                {% if user_achievements %}
+
+                {% for row in user_achievements %}
+                <div class="card mb-3">
+                    <div class="row">
+                        <div class="col-md-4 d-flex justify-content-center align-items-center">
+                            <img src="{{ url_for('static', filename='img/' + row.Picture) }}"
+                                style="max-width: 100px; max-height: 100px; margin-bottom: 2px; margin-top: 2px;"
+                                alt="Achievement Picture">
+                        </div>
+                        <div class="col-md-8">
+                            <div class="card-body">
+                                <h5 class="card-title"> {{ row.AchievementName }} </h5>
+                                <p class="card-text"> {{ row.Description }} </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+                {% else %}
+                <p>You have not earned any achievements yet.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}F
