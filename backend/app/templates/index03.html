@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IPP & Kartverket</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+
+    <style>
+        #map { height: 90vh; width: 100%; cursor: crosshair; }
+        body { margin: 0; padding: 0; font-family: sans-serif; }
+        .header { padding: 10px; background: #2c3e50; color: white; }
+    </style>
+
+</head>
+<body>
+
+    <div class="header">SAR - Sett IPP ved å klikke i kartet</div>
+    <div id="map"></div>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    
+    <script>
+        // 1. Initialiser kartet (Satt til midt-Norge som startpunkt)
+        var map = L.map('map').setView([63.26, 10.38], 8);
+
+        // 2. Definer lagene fra Kartverket (WMS-løsning)
+        var topo = L.tileLayer.wms('https://wms.geonorge.no/skwms1/wms.topo', {
+            layers: 'topo',
+            format: 'image/png',
+            transparent: true,
+            attribution: '&copy; Kartverket'
+        });
+
+        var sjokart = L.tileLayer.wms('https://wms.geonorge.no/skwms1/wms.sjokart_raster', {
+            layers: 'sjokart_raster',
+            format: 'image/png',
+            transparent: true,
+            attribution: '&copy; Kartverket'
+        });
+
+        // Legg til standardlaget
+        topo.addTo(map);
+
+        // 3. Lagvelger (Layer Control)
+        var baseLayers = {
+            "Topografisk": topo,
+            "Sjøkart": sjokart
+        };
+        L.control.layers(baseLayers).addTo(map);
+
+        // 4. IPP-Logikk (Sykkelhjulmodellen)
+        var ippMarker;
+
+        map.on('click', function(e) {
+            var lat = e.latlng.lat;
+            var lng = e.latlng.lng;
+
+            if (ippMarker) { map.removeLayer(ippMarker); }
+
+            // Lag en rød markør for IPP (viktig for synlighet)
+            ippMarker = L.marker([lat, lng]).addTo(map);
+            ippMarker.bindPopup("<b>IPP satt</b><br>Klar for sykkelhjulmodell." + "<br>Koordinater: " + lat.toFixed(5) + ", " + lng.toFixed(5)).openPopup();
+            
+            console.log("Nytt IPP lokalisert: " + lat + ", " + lng);
+        });
+    </script>
+</body>
+</html>

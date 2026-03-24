@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sykkehjulmodellen</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <style>
+        #map { height: 80vh; width: 100%; cursor: crosshair; }
+        .info-box { padding: 10px; background: white; border: 1px solid #ccc; }
+    </style>
+</head>
+<body>
+    <h1>Søk og Redning: Definer IPP</h1>
+    <div class="info-box">Klikk i kartet for å sette Initial Planning Point (IPP).</div>
+    <div id="map"></div>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script>
+        // 1. Sentrer kartet (her over et turområde i Oslo som eksempel)
+        var map = L.map('map').setView([59.98, 10.72], 12);
+
+        // 2. Bruk Kartverkets gråtonekart for bedre lesbarhet i SAR og WMTS
+        L.tileLayer('https://cache.kartverket.no/v1/wmts/1.0.0/topograatone/default/webmercator/{z}/{y}/{x}.png', {
+            attribution: '&copy; <a href="http://www.kartverket.no/">Kartverket</a>'
+        }).addTo(map);
+
+        var ippMarker;
+
+        // 3. Funksjon for å sette IPP ved klikk
+        map.on('click', function(e) {
+            var lat = e.latlng.lat;
+            var lng = e.latlng.lng;
+
+            // Fjern gammel markør hvis den finnes
+            if (ippMarker) {
+                map.removeLayer(ippMarker);
+            }
+
+            // Sett ny IPP-markør
+            ippMarker = L.marker([lat, lng], {draggable: true}).addTo(map);
+            ippMarker.bindPopup("<b>IPP (Initial Planning Point)</b><br>Lat: " + lat.toFixed(5) + "<br>Lng: " + lng.toFixed(5)).openPopup();
+
+            console.log("IPP satt til:", lat, lng);
+            
+            // Her kan du senere kalle en funksjon for å tegne "sykkelhjulet" (sirkler/sektorer)
+            // drawBicycleWheel(lat, lng); 
+        });
+    </script>
+</body>
+</html>
