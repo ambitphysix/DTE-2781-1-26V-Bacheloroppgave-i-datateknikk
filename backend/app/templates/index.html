@@ -28,6 +28,7 @@ var map = L.map('map').setView([59.91, 10.75], 12);
 var topo = L.tileLayer.wms('https://wms.geonorge.no/skwms1/wms.topo', {
     layers: 'topo',
     format: 'image/png',
+    opacity: 0.8, // Litt gjennomsiktig så vi ser IPP og sonene bedre
     attribution: '&copy; Kartverket'
 }).addTo(map);
 
