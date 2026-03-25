@@ -1,7 +1,6 @@
-from flask import Blueprint, request, jsonify
+from flask import request, jsonify
+from app.api import api
 from app.services.sector_service import generate_sectors_from_ipp
-
-api = Blueprint("api", __name__, url_prefix="/api")
 
 @api.route('/generate-sectors', methods=['POST'])
 def generate_sectors():
