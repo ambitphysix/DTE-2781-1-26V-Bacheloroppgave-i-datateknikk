@@ -1,44 +1,178 @@
 <!-- skriver bare utropstegn og enter -->
-<!DOCTYPE html>
+<!doctype html>
 <html lang="no">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Leaflet test</title>
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    />
 
     <style>
-        #map {
-            height: 500px;
-            width: 100%;
-        }
+      #map {
+        height: 500px;
+        width: 100%;
+      }
+
+      .point-info {
+        background: rgba(255, 255, 255, 0.95);
+        border: 1px solid #d0d7de;
+        border-radius: 8px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+        color: #1f2328;
+        font:
+          13px/1.4 Arial,
+          sans-serif;
+        padding: 8px 10px;
+      }
+
+      .point-info strong {
+        display: block;
+        margin-bottom: 2px;
+      }
     </style>
-</head>
-<body>
-    
+  </head>
+  <body>
     <h1>Leaflet kart</h1>
     <h2>fra OpenStreetMap</h2>
-    
-    
+
     <div id="map"></div>
 
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+    <script
+      src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+      integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+      crossorigin=""
+    ></script>
 
     <script>
-        // Initialiser kartet
-        // [59.91, 10.75] er koordinatene for Oslo. 13 er zoom-nivået.
-        var map = L.map('map').setView([59.91, 10.75], 13);
+      // Initialiser kartet
+      // [59.91, 10.75] er koordinatene for Oslo. 13 er zoom-nivået.
+      var map = L.map("map").setView([59.91, 10.75], 13);
 
-        // Legg til OpenStreetMap kartfliser
-        L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            maxZoom: 19,
-            attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-        }).addTo(map);
+      // Legg til OpenStreetMap kartfliser
+      L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
+        maxZoom: 19,
+        attribution:
+          '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+      }).addTo(map);
 
-        // Legg til en markør på kartet
-        var marker = L.marker([59.91, 10.75]).addTo(map);
-        marker.bindPopup("<b>Hei!</b><br>Dette er Oslo.").openPopup();
+      // Legg til en markør på kartet
+      var marker = L.marker([59.91, 10.75]).addTo(map);
+      marker.bindPopup("<b>Hei!</b><br>Dette er Oslo.").openPopup();
+
+      // Lag en melding i nedre høyre hjørne som viser valgt punkt.
+      var pointInfoControl = L.control({ position: "bottomright" });
+      var latestRequestId = 0;
+
+      pointInfoControl.onAdd = function () {
+        this._div = L.DomUtil.create("div", "point-info");
+        this.update(marker.getLatLng());
+        return this._div;
+      };
+
+      pointInfoControl.update = function (latlng) {
+        this._div.innerHTML =
+          "<strong>Satt punkt</strong>" +
+          "Lat: " +
+          latlng.lat.toFixed(5) +
+          "<br>" +
+          "Lng: " +
+          latlng.lng.toFixed(5) +
+          "<br>" +
+          "Adresse: henter...";
+      };
+
+      function formatAddress(data) {
+        if (!data || !data.address) {
+          return "Ingen adresse funnet";
+        }
+
+        var addr = data.address;
+        var street = [addr.road, addr.house_number].filter(Boolean).join(" ");
+        var place =
+          addr.city ||
+          addr.town ||
+          addr.village ||
+          addr.hamlet ||
+          addr.city_district ||
+          "";
+        var postalPlace = [addr.postcode, place].filter(Boolean).join(" ");
+        var municipality = addr.municipality || "";
+        var county = addr.county || addr.state || "";
+
+        var parts = [street, postalPlace, municipality, county].filter(Boolean);
+        if (parts.length === 0) {
+          return "Ingen adresse funnet";
+        }
+
+        return parts.join(", ");
+      }
+
+      async function updateAddress(latlng) {
+        var requestId = ++latestRequestId;
+        var url =
+          "https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=" +
+          encodeURIComponent(latlng.lat) +
+          "&lon=" +
+          encodeURIComponent(latlng.lng) +
+          "&zoom=18&addressdetails=1&accept-language=no";
+
+        try {
+          var response = await fetch(url, {
+            headers: {
+              Accept: "application/json",
+            },
+          });
+
+          if (!response.ok) {
+            throw new Error("Kunne ikke hente adresse");
+          }
+
+          var data = await response.json();
+
+          // Ignorer svar fra gamle foresporsler for a unnga feil rekkefolge i UI.
+          if (requestId !== latestRequestId) {
+            return;
+          }
+
+          pointInfoControl._div.innerHTML =
+            "<strong>Satt punkt</strong>" +
+            "Lat: " +
+            latlng.lat.toFixed(5) +
+            "<br>" +
+            "Lng: " +
+            latlng.lng.toFixed(5) +
+            "<br>" +
+            "Adresse: " +
+            formatAddress(data);
+        } catch (error) {
+          if (requestId !== latestRequestId) {
+            return;
+          }
+
+          pointInfoControl._div.innerHTML =
+            "<strong>Satt punkt</strong>" +
+            "Lat: " +
+            latlng.lat.toFixed(5) +
+            "<br>" +
+            "Lng: " +
+            latlng.lng.toFixed(5) +
+            "<br>" +
+            "Adresse: kunne ikke hentes";
+        }
+      }
+
+      pointInfoControl.addTo(map);
+      updateAddress(marker.getLatLng());
+
+      // Klikk i kartet for å flytte punktet og oppdatere meldingen.
+      map.on("click", function (e) {
+        marker.setLatLng(e.latlng);
+        pointInfoControl.update(e.latlng);
+        updateAddress(e.latlng);
+      });
     </script>
-    
-</body>
+  </body>
 </html>
