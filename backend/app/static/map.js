@@ -9,7 +9,7 @@ L.tileLayer.wms(
 ).addTo(map);
 
 var ippMarker;
-var searchZones = createSearchZoneLayer(map);
+var searchZoneLayer = createSearchZoneLayer(map);
 
 function setIpp(lat, lng) {
   if (ippMarker) {
@@ -19,7 +19,7 @@ function setIpp(lat, lng) {
   ippMarker = L.marker([lat, lng]).addTo(map);
   ippMarker.bindPopup("<b>IPP satt</b><br>Søkesoner generert.").openPopup();
 
-  searchZones.draw(lat, lng);
+  searchZoneLayer.draw(lat, lng);
 }
 
 map.on("click", function (event) {
