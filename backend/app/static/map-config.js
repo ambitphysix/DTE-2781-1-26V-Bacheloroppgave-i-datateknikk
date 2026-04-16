@@ -13,4 +13,12 @@ var SAR_MAP_CONFIG = {
     { radius: 1500, color: "orange", label: "50% Sone (Midtre)" },
     { radius: 500, color: "red", label: "25% Sone (Indre)" },
   ],
+  searchSectors: {
+    radius: 500,
+    count: 6,
+    arcSteps: 8,
+    color: "#2563eb",
+    fillColor: "#60a5fa",
+    fillOpacity: 0.12,
+  },
 };
