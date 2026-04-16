@@ -4,107 +4,17 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>IPP & Kartverket</title>
-    <link
-      rel="stylesheet"
-      href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
-    />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='index.css') }}" />
 
-    <style>
-      html,
-      body {
-        margin: 0;
-        padding: 0;
-        height: 100vh;
-        display: flex;
-        flex-direction: column;
-        overflow: hidden;
-        font-family: sans-serif;
-      }
-      #map {
-        flex: 1;
-        width: 100%;
-        cursor: crosshair;
-      }
-      .header {
-        padding: 10px;
-        background: #2c3e50;
-        color: white;
-      }
-      .leaflet-interactive:focus {
-        outline: none;
-      }
-    </style>
   </head>
   <body>
     <div class="header">SAR - Sett IPP ved å klikke i kartet</div>
     <div id="map"></div>
 
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-
-    <script>
-      // 1. Initialiser kartet
-      var map = L.map("map").setView([59.91, 10.75], 12);
-
-      // 2. Kartverket lag (WMS)
-      var topo = L.tileLayer
-        .wms("https://wms.geonorge.no/skwms1/wms.topo", {
-          layers: "topo",
-          format: "image/png",
-          opacity: 0.8, // Litt gjennomsiktig så vi ser IPP og sonene bedre
-          attribution: "&copy; Kartverket",
-        })
-        .addTo(map);
-
-      var ippMarker;
-      var sirkelLag = L.layerGroup().addTo(map); // Eget lag for sirklene så de er lette å fjerne
-
-      // 3. Funksjon for å tegne sykkelhjulet (Sykkelhjulmodellen)
-      function tegnSykkelhjul(lat, lng) {
-        sirkelLag.clearLayers();
-
-        // Vi sorterer sonene slik at den største tegnes FØRST (ligger nederst)
-        var soner = [
-          { radius: 3000, farge: "yellow", tekst: "75% Sone (Ytre)" },
-          { radius: 1500, farge: "orange", tekst: "50% Sone (Midtre)" },
-          { radius: 500, farge: "red", tekst: "25% Sone (Indre)" },
-        ];
-
-        soner.forEach(function (sone) {
-          L.circle([lat, lng], {
-            radius: sone.radius,
-            color: sone.farge,
-            fillColor: sone.farge,
-            fillOpacity: 0.05, // Veldig lav opacity så vi ser kartet bak
-            weight: 2,
-            dashArray: "5, 5",
-            interactive: true, // Gjør at de reagerer på mus
-          })
-            .bindTooltip(sone.tekst, {
-              sticky: true,
-              direction: "top",
-            })
-            .addTo(sirkelLag);
-        });
-      }
-
-      // 4. Klikk-håndterer
-      map.on("click", function (e) {
-        var lat = e.latlng.lat;
-        var lng = e.latlng.lng;
-
-        if (ippMarker) {
-          map.removeLayer(ippMarker);
-        }
-
-        // Sett IPP Markør
-        ippMarker = L.marker([lat, lng]).addTo(map);
-        ippMarker
-          .bindPopup("<b>IPP satt</b><br>Søkesoner generert.")
-          .openPopup();
-
-        // Tegn "hjulet"
-        tegnSykkelhjul(lat, lng);
-      });
-    </script>
+    <script src="{{ url_for('static', filename='map-config.js') }}"></script>
+    <script src="{{ url_for('static', filename='search-zones.js') }}"></script>
+    <script src="{{ url_for('static', filename='map.js') }}"></script>
   </body>
 </html>
