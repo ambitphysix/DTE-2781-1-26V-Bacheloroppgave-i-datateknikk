@@ -1,0 +1,30 @@
+html, body {
+    height: 100%;
+    margin: 0;
+    background: #fff;
+}
+
+#map {
+    width: 100%;
+    height: 100%;
+    background: #fff;
+}
+
+nav ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    background-color: #333333;
+    display: flex;
+}
+
+nav ul li a {
+display: block;
+color: white;
+padding: 14px 16px;
+text-decoration: none;
+}
+
+nav ul li a:hover {
+background-color: #111111;
+}
