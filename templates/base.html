@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta http-equiv="X-UA-Compatible" content="IE=8">
+        <meta charset="UTF-8">
+        <title>Sykkelhjulmodellen</title>
+
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/leaflet.css') }}" />
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}" />
+
+    </head>
+    <body>
+        <nav>
+            <ul>
+                <li><a href="/">Hjem</a></li>
+                <li><a href="/map">Kart</a></li>
+                <li><a href="/login">Logg inn (dummy)</a></li>
+            </ul>
+        </nav>
+        {% block content %}{% endblock %}
+        {% block scripts %}{% endblock %}
+    </body>
+</html>
