@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div>
+    <div>
+        <h1>Register</h1>
+        <form method="POST" action="{{ url_for('register.register') }}">
+            {{ form.hidden_tag() }}
+            <br>
+
+            <div class="mb-3">
+                {{ form.username.label() }}
+                {{ form.username() }}
+                {% for error in form.username.errors %}
+                <span>{{ error }}</span>
+                {% endfor %}
+            </div>
+
+            <div class="mb-3">
+                {{ form.password.label() }}
+                {{ form.password() }}
+                {% for error in form.password.errors %}
+                <span>{{ error }}</span>
+                {% endfor %}
+            </div>
+
+            <div class="mb-3">
+                {{ form.password_confirm.label() }}
+                {{ form.password_confirm() }}
+                {% for error in form.password_confirm.errors %}
+                <span class="text-danger">{{ error }}</span>
+                {% endfor %}
+            </div>
+            
+            <button type="submit">Registrer bruker</button>
+        </form>
+    </div>
+</div>
+{% endblock %}

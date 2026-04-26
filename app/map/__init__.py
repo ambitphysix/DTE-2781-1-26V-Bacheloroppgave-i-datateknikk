@@ -1,0 +1,1 @@
+from app.map.map import BP as map_bp

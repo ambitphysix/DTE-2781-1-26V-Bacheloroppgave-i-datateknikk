@@ -1,17 +1,19 @@
 import mysql.connector
-from config import config
-from werkzeug.security import generate_password_hash
+from app.config import config
 
+"""
+Hentet denne klassen fra prosjektet Turist1 fra systemutviklingsfaget.
+"""
 
 class mySQLDB:
     def __init__(self) -> None:
 
         self.configuration = {
-            "host": config.get("database", "host"),
-            "port": config.getint("database", "port"),
-            "user": config.get("database", "user"),
-            "password": config.get("database", "password"),
-            "database": config.get("database", "database"),
+            "host": config.get("database-mariadb", "dbhost"),
+            "port": config.getint("database-mariadb", "dbport"),
+            "user": config.get("database-mariadb", "dbuser"),
+            "password": config.get("database-mariadb", "dbpass"),
+            "database": config.get("database-mariadb", "dbname"),
         }
 
     def __enter__(self):
