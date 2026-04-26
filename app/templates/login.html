@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div>
+    <div>
+        <h1>Logg inn</h1>
+        <form method="POST" action="{{ url_for('auth.login') }}">
+            {{ form.hidden_tag() }}
+            <br>
+            <div>
+                {{ form.username.label() }}
+                {{ form.username()}}
+                {% for error in form.username.errors %}
+                <span>{{ error }}</span>
+                {% endfor %}
+            </div>
+            <div>
+                {{ form.password.label() }}
+                {{ form.password() }}
+                {% for error in form.password.errors %}
+                <span>{{ error }}</span>
+                {% endfor %}
+            </div>
+            <br>
+            <button type="submit">Login</button>
+        </form>
+    </div>
+    <a href="{{ url_for('register.register') }}">Registrer deg</a>
+</div>
+{% endblock %}
+
+{% block scripts %}{% endblock %}
