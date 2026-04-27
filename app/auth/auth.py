@@ -21,7 +21,7 @@ def login():
         value = User.login(username, password)
         if value == "success":
             flash("Logget in", category = "success")
-            return redirect(url_for("index.index"))
+            return redirect(url_for("map.map"))
         else:
             flash("Ugydlig kombinasjon av brukernavn og passord", category = "warning")
     return render_template("login.html", form=form)

@@ -9,11 +9,19 @@
     <script type="text/javascript">
         (function () {
             var map = L.map('map').setView([64.5, 10], 5);
-            L.tileLayer.wms('https://wms.geonorge.no/skwms1/wms.topo', {
-                layers: 'topo',
-                format: 'image/png',
-                attribution: '&copy; Kartverket'
-            }).addTo(map);
+
+            L.tileLayer.wms(
+                'https://wms.geonorge.no/skwms1/wms.topo', {
+                    layers: 'topo',
+                    format: 'image/png',
+                    attribution: '&copy; Kartverket'
+                }
+            ).addTo(map);
+
+            var ringLayer = L.geoJSON(
+                null, 
+                {}
+            ).addTo(map);
         }());
         console.log("Kartet er lagt til")
     </script>
