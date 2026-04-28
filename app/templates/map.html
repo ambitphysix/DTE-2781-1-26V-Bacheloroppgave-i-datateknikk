@@ -6,6 +6,7 @@
 
 {% block scripts %}
     <script src="{{ url_for('static', filename='js/leaflet.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/display.js') }}"></script>
     <script type="text/javascript">
         (function () {
             var map = L.map('map').setView([64.5, 10], 5);
@@ -18,10 +19,10 @@
                 }
             ).addTo(map);
 
-            var ringLayer = L.geoJSON(
-                null, 
-                {}
-            ).addTo(map);
+            var ringLayer = L.layerGroup().addTo(map);
+
+            map.on("click", (e) => displayMapObjects(e, ringLayer))
+
         }());
         console.log("Kartet er lagt til")
     </script>
