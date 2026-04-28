@@ -5,9 +5,11 @@
 {% endblock %}
 
 {% block scripts %}
-    <script src="{{ url_for('static', filename='js/leaflet.js') }}"></script>
-    <script src="{{ url_for('static', filename='js/display.js') }}"></script>
-    <script type="text/javascript">
+    <script type="module" src="{{ url_for('static', filename='js/leaflet.js') }}"></script>
+    <script type="module" src="{{ url_for('static', filename='js/display.js') }}"></script>
+    <script type="module">
+        import { displayMapObjects } from "{{ url_for('static', filename='js/display.js') }}";
+        import { MissingPersonMenu } from "{{ url_for('static', filename='js/display.js') }}";
         (function () {
             var map = L.map('map').setView([64.5, 10], 5);
 
@@ -20,8 +22,14 @@
             ).addTo(map);
 
             var ringLayer = L.layerGroup().addTo(map);
-
-            map.on("click", (e) => displayMapObjects(e, ringLayer))
+            var menu = new MissingPersonMenu()
+            menu.addTo(map);
+            map.on("click", (e) => {
+                const selectedCategory = document.getElementById("missingPersonCategoryMenu").value;
+                displayMapObjects(e, ringLayer, selectedCategory);
+            } 
+            
+        )
 
         }());
         console.log("Kartet er lagt til")
