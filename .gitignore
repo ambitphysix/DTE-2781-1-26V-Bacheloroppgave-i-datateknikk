@@ -1,0 +1,6 @@
+.env
+__pycache__
+.vscode
+venv
+docker-compose.yml
+app/config/config.ini
