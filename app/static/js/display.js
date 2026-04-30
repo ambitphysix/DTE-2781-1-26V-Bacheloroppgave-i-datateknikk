@@ -3,12 +3,12 @@ import {getSpokes} from "./requests.js"
 import {getTeiger} from "./requests.js"
 
 const teigColors = [
-    '#2563eb',
-    '#059669',
-    '#d97706',
-    '#7c3aed',
-    '#dc2626',
-    '#0891b2'
+    '#2f5f8f',
+    '#496f94',
+    '#5b7f9d',
+    '#6f8fa8',
+    '#3f6f86',
+    '#55738a'
 ];
 
 export function displayMapObjects(eventHandler, ringLayer, missingPersonCategory, teigInfoPanel) {
@@ -113,9 +113,9 @@ function getTeigStyle(feature) {
     return {
         color: color,
         weight: 2,
-        opacity: 0.95,
+        opacity: 0.88,
         fillColor: color,
-        fillOpacity: 0.24 + ((teigNumber % 3) * 0.06)
+        fillOpacity: 0.12 + ((teigNumber % 3) * 0.03)
     };
 };
 
@@ -202,7 +202,8 @@ function displayTeiger(lat, lng, r50Meter, layer, teigInfoPanel){
                     mouseover: () => {
                         featureLayer.setStyle({
                             weight: 4,
-                            fillOpacity: 0.48
+                            opacity: 1,
+                            fillOpacity: 0.28
                         });
                         featureLayer.bringToFront();
                     },
