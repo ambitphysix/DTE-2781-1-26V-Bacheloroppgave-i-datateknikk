@@ -4,3 +4,13 @@ export function getRadii(missingPersonCategory){
         {return response.json()}
     )
 }
+
+export function getSpokes(lat, lng){
+    const params = new URLSearchParams();
+    params.append('lat', lat);
+    params.append('lng', lng);
+    return fetch(`/data/spokes?${params}`)
+    .then(response =>
+        {return response.json()}
+    )
+}
