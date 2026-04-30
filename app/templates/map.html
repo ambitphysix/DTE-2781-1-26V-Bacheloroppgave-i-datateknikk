@@ -10,6 +10,7 @@
     <script type="module">
         import { displayMapObjects } from "{{ url_for('static', filename='js/display.js') }}";
         import { MissingPersonMenu } from "{{ url_for('static', filename='js/display.js') }}";
+        import { TeigInfoPanel } from "{{ url_for('static', filename='js/display.js') }}";
         (function () {
             var map = L.map('map').setView([64.5, 10], 5);
 
@@ -24,9 +25,11 @@
             var ringLayer = L.layerGroup().addTo(map);
             var menu = new MissingPersonMenu()
             menu.addTo(map);
+            var teigInfoPanel = new TeigInfoPanel()
+            teigInfoPanel.addTo(map);
             map.on("click", (e) => {
                 const selectedCategory = document.getElementById("missingPersonCategoryMenu").value;
-                displayMapObjects(e, ringLayer, selectedCategory);
+                displayMapObjects(e, ringLayer, selectedCategory, teigInfoPanel);
             } 
             
         )

@@ -28,3 +28,41 @@ text-decoration: none;
 nav ul li a:hover {
 background-color: #111111;
 }
+
+.teig-info-panel {
+    min-width: 150px;
+    padding: 10px 12px;
+    color: #111827;
+    background: rgba(255, 255, 255, 0.92);
+    border: 1px solid rgba(17, 24, 39, 0.18);
+    border-radius: 8px;
+    box-shadow: 0 8px 24px rgba(15, 23, 42, 0.18);
+    font-family: Arial, sans-serif;
+    font-size: 13px;
+    line-height: 1.35;
+}
+
+.teig-info-title {
+    margin-bottom: 8px;
+    color: #0f172a;
+    font-size: 14px;
+    font-weight: 700;
+}
+
+.teig-info-row {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 16px;
+    margin-top: 4px;
+}
+
+.teig-info-row span {
+    color: #4b5563;
+}
+
+.teig-info-row strong {
+    color: #111827;
+    font-weight: 700;
+    text-align: right;
+}
