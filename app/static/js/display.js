@@ -7,6 +7,12 @@ export function displayMapObjects(eventHandler, ringLayer, missingPersonCategory
         ringLayer,
         missingPersonCategory
     );
+
+    displayIPP(
+        eventHandler.latlng.lat,
+        eventHandler.latlng.lng,
+        ringLayer
+    );
 };
 
 function displayRings(lat, lng, layer, missingPersonCategory){
@@ -43,6 +49,17 @@ function displayRings(lat, lng, layer, missingPersonCategory){
         }
     )    
 }
+
+function displayIPP(lat, lng, layer){
+    var icon = L.icon(
+        {
+            iconUrl: './static/css/images/ipp.png',
+            iconSize: [15, 15]
+        }
+    )
+    L.marker([lat, lng], {icon: icon}).addTo(layer);
+}
+
 
 export const MissingPersonMenu = L.Control.extend({
     onAdd: function(missingPersonCategories) {
