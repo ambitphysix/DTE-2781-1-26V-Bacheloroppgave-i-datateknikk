@@ -1,4 +1,5 @@
 import {getRadii} from "./requests.js"
+import {getSpokes} from "./requests.js"
 
 export function displayMapObjects(eventHandler, ringLayer, missingPersonCategory) {
     displayRings(
@@ -9,6 +10,12 @@ export function displayMapObjects(eventHandler, ringLayer, missingPersonCategory
     );
 
     displayIPP(
+        eventHandler.latlng.lat,
+        eventHandler.latlng.lng,
+        ringLayer
+    );
+
+    displaySpokes(
         eventHandler.latlng.lat,
         eventHandler.latlng.lng,
         ringLayer
@@ -48,7 +55,7 @@ function displayRings(lat, lng, layer, missingPersonCategory){
             }).addTo(layer)
         }
     )    
-}
+};
 
 function displayIPP(lat, lng, layer){
     var icon = L.icon(
@@ -60,8 +67,16 @@ function displayIPP(lat, lng, layer){
     const marker = L.marker([lat, lng], {icon: icon})
     marker.bindTooltip("IPP")
     marker.addTo(layer);
-}
+};
 
+function displaySpokes(lat, lng, layer){
+    getSpokes(lat, lng).then( data => {
+        data.forEach( spoke => {
+                L.geoJson(spoke).addTo(layer);
+        }
+        )
+    })
+};
 
 export const MissingPersonMenu = L.Control.extend({
     onAdd: function(missingPersonCategories) {
