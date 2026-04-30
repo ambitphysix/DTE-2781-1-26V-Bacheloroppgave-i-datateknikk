@@ -57,7 +57,9 @@ function displayIPP(lat, lng, layer){
             iconSize: [15, 15]
         }
     )
-    L.marker([lat, lng], {icon: icon}).addTo(layer);
+    const marker = L.marker([lat, lng], {icon: icon})
+    marker.bindTooltip("IPP")
+    marker.addTo(layer);
 }
 
 
