@@ -4,3 +4,4 @@ __pycache__
 venv
 docker-compose.yml
 app/config/config.ini
+.flaskenv
