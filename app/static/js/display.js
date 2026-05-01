@@ -11,6 +11,12 @@ const teigColors = [
     '#55738a'
 ];
 
+const teigHoverStyle = {
+    weight: 4,
+    opacity: 1,
+    fillOpacity: 0.28
+};
+
 export function displayMapObjects(eventHandler, ringLayer, missingPersonCategory, teigInfoPanel) {
     const lat = eventHandler.latlng.lat;
     const lng = eventHandler.latlng.lng;
@@ -30,9 +36,7 @@ export function displayMapObjects(eventHandler, ringLayer, missingPersonCategory
         );
     }).catch(error => {
         console.error("Klarte ikke å hente søkeringer:", error);
-        if (teigInfoPanel) {
-            teigInfoPanel.update(0, 0);
-        }
+        resetTeigInfoPanel(teigInfoPanel);
     });
 
     displayIPP(
@@ -135,6 +139,55 @@ function formatAreaM2(areaM2) {
     return `${Math.round(Number(areaM2 || 0)).toLocaleString('nb-NO')} m²`;
 };
 
+function resetTeigInfoPanel(teigInfoPanel) {
+    if (teigInfoPanel) {
+        teigInfoPanel.update(0, 0);
+    }
+};
+
+function numberTeigFeatures(features) {
+    features.forEach((feature, index) => {
+        feature.properties = feature.properties || {};
+        feature.properties.teig_number = index + 1;
+    });
+};
+
+function getTotalTeigArea(features) {
+    return features.reduce((sum, feature) => {
+        return sum + Number(feature.properties.area_m2 || 0);
+    }, 0);
+};
+
+function updateTeigInfoPanel(teigInfoPanel, features) {
+    if (teigInfoPanel) {
+        teigInfoPanel.update(features.length, getTotalTeigArea(features));
+    }
+};
+
+function bindTeigTooltip(feature, featureLayer) {
+    const teigNumber = feature.properties.teig_number;
+    const area = formatAreaM2(feature.properties.area_m2);
+
+    featureLayer.bindTooltip(`Teig ${teigNumber} – ${area}`);
+};
+
+function bindTeigHover(feature, featureLayer) {
+    featureLayer.on({
+        mouseover: () => {
+            featureLayer.setStyle(teigHoverStyle);
+            featureLayer.bringToFront();
+        },
+        mouseout: () => {
+            featureLayer.setStyle(getTeigStyle(feature));
+        }
+    });
+};
+
+function setupTeigFeature(feature, featureLayer) {
+    bindTeigTooltip(feature, featureLayer);
+    bindTeigHover(feature, featureLayer);
+};
+
 export const TeigInfoPanel = L.Control.extend({
     options: {
         position: 'topright'
@@ -169,55 +222,22 @@ export const TeigInfoPanel = L.Control.extend({
 
 function displayTeiger(lat, lng, r50Meter, layer, teigInfoPanel){
     getTeiger(lat, lng, r50Meter).then( data => {
-        if (!data.features) {
+        if (!Array.isArray(data.features)) {
             console.warn("Ingen teiger å tegne:", data);
-            if (teigInfoPanel) {
-                teigInfoPanel.update(0, 0);
-            }
+            resetTeigInfoPanel(teigInfoPanel);
             return;
         }
 
-        data.features.forEach((feature, index) => {
-            feature.properties = feature.properties || {};
-            feature.properties.teig_number = index + 1;
-        });
-
-        const totalArea = data.features.reduce((sum, feature) => {
-            return sum + Number(feature.properties.area_m2 || 0);
-        }, 0);
-
-        if (teigInfoPanel) {
-            teigInfoPanel.update(data.features.length, totalArea);
-        }
+        numberTeigFeatures(data.features);
+        updateTeigInfoPanel(teigInfoPanel, data.features);
 
         L.geoJson(data, {
             style: getTeigStyle,
-            onEachFeature: (feature, featureLayer) => {
-                const teigNumber = feature.properties.teig_number;
-                const area = formatAreaM2(feature.properties.area_m2);
-
-                featureLayer.bindTooltip(`Teig ${teigNumber} – ${area}`);
-
-                featureLayer.on({
-                    mouseover: () => {
-                        featureLayer.setStyle({
-                            weight: 4,
-                            opacity: 1,
-                            fillOpacity: 0.28
-                        });
-                        featureLayer.bringToFront();
-                    },
-                    mouseout: () => {
-                        featureLayer.setStyle(getTeigStyle(feature));
-                    }
-                });
-            }
+            onEachFeature: setupTeigFeature
         }).addTo(layer);
     }).catch(error => {
         console.error("Klarte ikke å hente teiger:", error);
-        if (teigInfoPanel) {
-            teigInfoPanel.update(0, 0);
-        }
+        resetTeigInfoPanel(teigInfoPanel);
     })
 };
 
