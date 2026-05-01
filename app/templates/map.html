@@ -6,11 +6,10 @@
 
 {% block scripts %}
     <script type="module" src="{{ url_for('static', filename='js/leaflet.js') }}"></script>
-    <script type="module" src="{{ url_for('static', filename='js/display.js') }}"></script>
     <script type="module">
-        import { displayMapObjects } from "{{ url_for('static', filename='js/display.js') }}";
-        import { MissingPersonMenu } from "{{ url_for('static', filename='js/display.js') }}";
-        import { TeigInfoPanel } from "{{ url_for('static', filename='js/display.js') }}";
+        import { displayMapObjects } from "{{ url_for('static', filename='js/display/display.js') }}";
+        import { MissingPersonMenu } from "{{ url_for('static', filename='js/display/missing-person-menu.js') }}";
+        import { TeigInfoPanel } from "{{ url_for('static', filename='js/display/teig-info-panel.js') }}";
         (function () {
             var map = L.map('map').setView([64.5, 10], 5);
 
