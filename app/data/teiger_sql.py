@@ -9,12 +9,18 @@ TEIGER_SQL_WITH_EXTEND = """
             %s::double precision AS extend_meter
     ),
 
-    r50 AS (
-        -- R50 brukes både som klippeflate og som ytre ring i linjenettet.
+    r50_area AS (
+        -- R50 beregnes én gang og brukes videre som både flate og ring.
         SELECT
-            ST_Buffer(ipp, r50_meter) AS area,
-            ST_Boundary(ST_Buffer(ipp, r50_meter)) AS ring
+            ST_Buffer(ipp, r50_meter) AS area
         FROM params
+    ),
+
+    r50 AS (
+        SELECT
+            area,
+            ST_Boundary(area) AS ring
+        FROM r50_area
     ),
 
     roads_raw AS (
@@ -51,17 +57,23 @@ TEIGER_SQL_WITH_EXTEND = """
         FROM roads_raw, r50, params
     ),
 
+    roads_intersections AS (
+        -- Klipp alle veilinjer til R50 én gang før tomme geometrier filtreres bort.
+        SELECT
+            ST_Intersection(geom, r50.area) AS geom
+        FROM roads_extended, r50
+    ),
+
     roads_clipped AS (
-        -- Klipp alle veilinjer til R50.
         SELECT
             (ST_Dump(
                 ST_CollectionExtract(
-                    ST_Intersection(geom, r50.area),
+                    geom,
                     2
                 )
             )).geom AS geom
-        FROM roads_extended, r50
-        WHERE NOT ST_IsEmpty(ST_Intersection(geom, r50.area))
+        FROM roads_intersections
+        WHERE NOT ST_IsEmpty(geom)
     ),
 
     linework AS (
@@ -127,23 +139,37 @@ TEIGER_SQL_FALLBACK = """
             %s::double precision AS r50_meter
     ),
 
+    r50_area AS (
+        -- R50 beregnes én gang og brukes videre som både flate og ring.
+        SELECT
+            ST_Buffer(ipp, r50_meter) AS area
+        FROM params
+    ),
+
     r50 AS (
         SELECT
-            ST_Buffer(ipp, r50_meter) AS area,
-            ST_Boundary(ST_Buffer(ipp, r50_meter)) AS ring
-        FROM params
+            area,
+            ST_Boundary(area) AS ring
+        FROM r50_area
+    ),
+
+    roads_intersections AS (
+        SELECT
+            ST_Intersection(ST_CurveToLine(v.senterlinje), r50.area) AS geom
+        FROM n50kartdata.veglenke v, r50
+        WHERE ST_Intersects(v.senterlinje, r50.area)
     ),
 
     roads_clipped AS (
         SELECT
             (ST_Dump(
                 ST_CollectionExtract(
-                    ST_Intersection(ST_CurveToLine(v.senterlinje), r50.area),
+                    geom,
                     2
                 )
             )).geom AS geom
-        FROM n50kartdata.veglenke v, r50
-        WHERE ST_Intersects(v.senterlinje, r50.area)
+        FROM roads_intersections
+        WHERE NOT ST_IsEmpty(geom)
     ),
 
     linework AS (
