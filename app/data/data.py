@@ -31,32 +31,42 @@ def missingPersonCategories():
 def spokes():
     lat = request.args.get('lat')
     lng = request.args.get('lng')
+    radius = request.args.get('radius')
     with myPostgresqlDB() as db:
         query = """
-            SELECT ST_AsGeoJSON(
-                ST_Transform(
-                    ST_LineMerge(
-                        ST_Node( -- 2. Deler linjene i alle krysspunkter
-                            ST_Snap( -- 1. Drar endepunkter mot hverandre (0.2m toleranse)
-                                geom_collection, 
-                                geom_collection, 
-                                0.2
-                            )
+                WITH RECURSIVE connected_roads AS (
+                    SELECT 
+                        v.senterlinje, 
+                        v.objid
+                    FROM 
+                        n50kartdata.veglenke v
+                    WHERE 
+                        ST_DWithin(
+                            v.senterlinje, 
+                            ST_Transform(ST_SetSRID(ST_MakePoint(%s, %s), 4326), 25833), 
+                            10.0
                         )
-                    ), 
-                4326)
-            )
-            FROM (
-                SELECT ST_Collect(ST_CurveToLine(senterlinje)) AS geom_collection
-                FROM n50kartdata.veglenke
-                WHERE ST_DWithin(
-                    senterlinje, 
-                    ST_Transform(ST_SetSRID(ST_MakePoint(%s, %s), 4326), 25833),
-                    500
+
+                    UNION
+
+                    SELECT 
+                        v.senterlinje, 
+                        v.objid
+                    FROM 
+                        n50kartdata.veglenke v
+                    INNER JOIN 
+                        connected_roads cr ON ST_Intersects(v.senterlinje, cr.senterlinje)
+                    WHERE 
+                        ST_DWithin(
+                            v.senterlinje, 
+                            ST_Transform(ST_SetSRID(ST_MakePoint(%s, %s), 4326), 25833), 
+                            %s
+                        )
                 )
-            ) AS subquery;
+
+                SELECT DISTINCT st_asgeojson(st_transform(st_curvetoline(senterlinje), 4326)) as geom FROM connected_roads;
         """
-        db.query(query, lng, lat)
+        db.query(query, lng, lat, lng, lat, radius)
         rows = db.cursor.fetchall()
         geojson_list = [json.loads(row[0]) for row in rows]
         

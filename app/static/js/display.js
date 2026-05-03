@@ -18,6 +18,7 @@ export function displayMapObjects(eventHandler, ringLayer, missingPersonCategory
     displaySpokes(
         eventHandler.latlng.lat,
         eventHandler.latlng.lng,
+        missingPersonCategory,
         ringLayer
     );
 };
@@ -65,17 +66,20 @@ function displayIPP(lat, lng, layer){
         }
     )
     const marker = L.marker([lat, lng], {icon: icon})
-    marker.bindTooltip("IPP")
+    marker.bindTooltip("IPP");
     marker.addTo(layer);
 };
 
-function displaySpokes(lat, lng, layer){
-    getSpokes(lat, lng).then( data => {
-        data.forEach( spoke => {
-                L.geoJson(spoke).addTo(layer);
+function displaySpokes(lat, lng, missingPersonCategory, layer){
+    getRadii(missingPersonCategory).then( radius => {
+        getSpokes(lat, lng, radius.p75*1000).then( data => {
+            data.forEach( spoke => {
+                    L.geoJson(spoke).addTo(layer);
+            }
+            )
+        })
         }
-        )
-    })
+    )
 };
 
 export const MissingPersonMenu = L.Control.extend({
