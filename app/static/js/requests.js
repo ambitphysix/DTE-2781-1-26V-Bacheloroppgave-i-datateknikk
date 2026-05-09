@@ -15,3 +15,14 @@ export function getSpokes(lat, lng, radius){
         {return response.json()}
     )
 }
+
+export function getSearchAreas(lat, lng, radius){
+    const params = new URLSearchParams();
+    params.append('lat', lat);
+    params.append('lng', lng);
+    params.append('radius', radius);
+    return fetch(`/data/searchAreas?${params}`)
+    .then(response =>
+        {return response.json()}
+    )
+}

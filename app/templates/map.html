@@ -13,7 +13,7 @@
         (function () {
             var map = L.map('map').setView([64.5, 10], 5);
 
-            L.tileLayer.wms(
+            var tileLayer = L.tileLayer.wms(
                 'https://wms.geonorge.no/skwms1/wms.topo', {
                     layers: 'topo',
                     format: 'image/png',
@@ -22,11 +22,35 @@
             ).addTo(map);
 
             var ringLayer = L.layerGroup().addTo(map);
-            var menu = new MissingPersonMenu()
-            menu.addTo(map);
+            
+            var spokeLayer = L.geoJson(null, {
+                style: { color: 'green', weight: 2 } // Spokes will be Green
+            }
+            ).addTo(map);
+            
+            var searchAreaLayer = L.geoJson().addTo(map);
+
+            var menu = new MissingPersonMenu().addTo(map);
+
+            var baseLayers = {
+                "Bakgrunnskart": tileLayer,
+            };
+
+            var overlays = {
+                "Eiker": spokeLayer,
+                "Søketeiger": searchAreaLayer
+            };
+
+            L.control.layers(baseLayers, overlays).addTo(map);
+
             map.on("click", (e) => {
                 const selectedCategory = document.getElementById("missingPersonCategoryMenu").value;
-                displayMapObjects(e, ringLayer, selectedCategory);
+                displayMapObjects(
+                    e,
+                    ringLayer,
+                    spokeLayer,
+                    searchAreaLayer,
+                    selectedCategory);
             } 
             
         )

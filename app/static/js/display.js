@@ -1,7 +1,8 @@
 import {getRadii} from "./requests.js"
 import {getSpokes} from "./requests.js"
+import {getSearchAreas} from "./requests.js"
 
-export function displayMapObjects(eventHandler, ringLayer, missingPersonCategory) {
+export function displayMapObjects(eventHandler, ringLayer, spokeLayer, searchAreaLayer, missingPersonCategory) {
     displayRings(
         eventHandler.latlng.lat,
         eventHandler.latlng.lng,
@@ -19,7 +20,14 @@ export function displayMapObjects(eventHandler, ringLayer, missingPersonCategory
         eventHandler.latlng.lat,
         eventHandler.latlng.lng,
         missingPersonCategory,
-        ringLayer
+        spokeLayer
+    );
+
+    displaySearchAreas(
+        eventHandler.latlng.lat,
+        eventHandler.latlng.lng,
+        missingPersonCategory,
+        searchAreaLayer
     );
 };
 
@@ -71,10 +79,24 @@ function displayIPP(lat, lng, layer){
 };
 
 function displaySpokes(lat, lng, missingPersonCategory, layer){
+    layer.clearLayers();
     getRadii(missingPersonCategory).then( radius => {
         getSpokes(lat, lng, radius.p75*1000).then( data => {
             data.forEach( spoke => {
-                    L.geoJson(spoke).addTo(layer);
+                    layer.addData(spoke);
+            }
+            )
+        })
+        }
+    )
+};
+
+function displaySearchAreas(lat, lng, missingPersonCategory, layer){
+    layer.clearLayers();
+    getRadii(missingPersonCategory).then( radius => {
+        getSearchAreas(lat, lng, radius.p95*1000).then( data => {
+            data.forEach( searchArea => {
+                    layer.addData(searchArea);
             }
             )
         })
