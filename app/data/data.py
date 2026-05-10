@@ -150,6 +150,126 @@ def search_areas():
                     n50kartdata.elvekant, reference
                 WHERE
                     ST_Intersects(relevant_area, grense)
+
+                UNION
+                
+                /*Denne henter ut elvbekk fra elvbekk-tabellen*/
+                SELECT 
+                    objid, ST_SetSRID(senterlinje, 25833) AS geom
+                FROM 
+                    n50kartdata.elvbekk, reference
+                WHERE
+                    ST_Intersects(relevant_area, senterlinje)
+
+                UNION
+                
+                /*Denne henter ut park-kanter fra park-tabellen*/
+                SELECT 
+                    objid, ST_Boundary(ST_SetSRID(omrade, 25833)) AS geom
+                FROM 
+                    n50kartdata.park, reference
+                WHERE
+                    ST_Intersects(relevant_area, omrade)
+
+                UNION
+                
+                /*Denne henter ut skytefelt-kanter fra skytefelt-tabellen*/
+                SELECT 
+                    objid, ST_Boundary(ST_SetSRID(omrade, 25833)) AS geom
+                FROM 
+                    n50kartdata.skytefelt, reference
+                WHERE
+                    ST_Intersects(relevant_area, omrade)
+
+                UNION
+
+                /*Denne henter ut tettbebyggelse-kanter fra tettbebyggelse-tabellen*/
+                SELECT 
+                    objid, ST_Boundary(ST_SetSRID(omrade, 25833)) AS geom
+                FROM 
+                    n50kartdata.tettbebyggelse, reference
+                WHERE
+                    ST_Intersects(relevant_area, omrade)
+
+                UNION
+
+                /*Denne henter ut innsjøregulert-kanter fra innsjøregulert-tabellen*/
+                SELECT 
+                    objid, ST_Boundary(ST_SetSRID(omrade, 25833)) AS geom
+                FROM 
+                    n50kartdata.innsjoregulert, reference
+                WHERE
+                    ST_Intersects(relevant_area, omrade)
+
+                UNION
+
+                /*Denne henter ut industriområde-kanter fra industriområde-tabellen*/
+                SELECT 
+                    objid, ST_Boundary(ST_SetSRID(omrade, 25833)) AS geom
+                FROM 
+                    n50kartdata.industriomrade, reference
+                WHERE
+                    ST_Intersects(relevant_area, omrade)
+
+                UNION
+
+                /*Denne henter ut havflate-kanter fra havflate-tabellen*/
+                SELECT 
+                    objid, ST_Boundary(ST_SetSRID(omrade, 25833)) AS geom
+                FROM 
+                    n50kartdata.havflate, reference
+                WHERE
+                    ST_Intersects(relevant_area, omrade)
+
+                UNION
+
+                /*Denne henter ut gravplass-kanter fra gravplass-tabellen*/
+                SELECT 
+                    objid, ST_Boundary(ST_SetSRID(omrade, 25833)) AS geom
+                FROM 
+                    n50kartdata.gravplass, reference
+                WHERE
+                    ST_Intersects(relevant_area, omrade)
+
+                UNION
+
+                /*Denne henter ut golfbane-kanter fra golfbane-tabellen*/
+                SELECT 
+                    objid, ST_Boundary(ST_SetSRID(omrade, 25833)) AS geom
+                FROM 
+                    n50kartdata.golfbane, reference
+                WHERE
+                    ST_Intersects(relevant_area, omrade)
+
+                UNION
+
+                /*Denne henter ut dyrketmark-kanter fra dyrketmark-tabellen*/
+                SELECT 
+                    objid, ST_Boundary(ST_SetSRID(omrade, 25833)) AS geom
+                FROM 
+                    n50kartdata.dyrketmark, reference
+                WHERE
+                    ST_Intersects(relevant_area, omrade)
+
+                UNION
+
+                /*Denne henter ut bymessigbebyggelse-kanter fra bymessigbebyggelse-tabellen*/
+                SELECT 
+                    objid, ST_Boundary(ST_SetSRID(omrade, 25833)) AS geom
+                FROM 
+                    n50kartdata.bymessigbebyggelse, reference
+                WHERE
+                    ST_Intersects(relevant_area, omrade)
+
+                UNION
+
+                /*Denne henter ut bygningområde-kanter fra bygningområde-tabellen*/
+                SELECT 
+                    objid, ST_Boundary(ST_SetSRID(omrade, 25833)) AS geom
+                FROM 
+                    n50kartdata.bygning_omrade, reference
+                WHERE
+                    ST_Intersects(relevant_area, omrade)
                 )
                 
             SELECT
