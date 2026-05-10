@@ -86,110 +86,85 @@ def search_areas():
     lng = request.args.get('lng')
     radius = request.args.get('radius')
     with myPostgresqlDB() as db:
-        query = f"""
-            WITH geom_collection AS
+        query = """
+            WITH 
+                reference AS (
+                    SELECT
+                        ST_Buffer(
+                                st_transform(
+                                    ST_SetSRID(st_makepoint(%s, %s), 4326), 
+                                    25833
+                                ),
+                                %s
+                            )
+                    AS 
+                        relevant_area
+                
+                ),
+            
+            geom_collection AS
                 (
                 /*Denne henter ut lysløyper fra lysløype-tabellen*/
                 SELECT 
-                    objid, st_setsrid(senterlinje, 25833) AS geom
+                    objid, ST_SetSRID(senterlinje, 25833) AS geom
                 FROM 
-                    n50kartdata.lysloype
+                    n50kartdata.lysloype, reference
                 WHERE
-                    st_intersects(
-                        st_buffer(
-                            st_transform(
-                                st_setsrid(st_makepoint({lng}, {lat}), 4326), 
-                                25833
-                            ),
-                            {radius}
-                        ),
-                        senterlinje
-                    )
+                    ST_Intersects(relevant_area, senterlinje)
                 
                 UNION
                     
                 /*Denne henter ut veglenke-elementer fra veglenke-tabellen*/
                 SELECT 
-                    objid, st_setsrid(senterlinje, 25833) AS geom
+                    objid, ST_SetSRID(senterlinje, 25833) AS geom
                 FROM 
-                    n50kartdata.veglenke
+                    n50kartdata.veglenke, reference
                 WHERE
-                    st_intersects(
-                        st_buffer(
-                            st_transform(
-                                st_setsrid(st_makepoint({lng}, {lat}), 4326), 
-                                25833
-                            ),
-                            {radius}
-                        ),
-                        senterlinje
-                    )
+                    ST_Intersects(relevant_area, senterlinje)
                 
                 UNION
                 
                 /*Denne henter ut innsjø-kanter fra innsjøkant-tabellen*/
                 SELECT 
-                    objid, st_setsrid(grense, 25833) AS geom
+                    objid, ST_SetSRID(grense, 25833) AS geom
                 FROM 
-                    n50kartdata.innsjokant
+                    n50kartdata.innsjokant, reference
                 WHERE
-                    st_intersects(
-                        st_buffer(
-                            st_transform(
-                                st_setsrid(st_makepoint({lng}, {lat}), 4326), 
-                                25833
-                            ),
-                            {radius}
-                        ),
-                        grense
-                    )
+                    ST_Intersects(relevant_area, grense)
                 
                 UNION
                 
                 /*Denne henter ut myr-kanter fra myr-tabellen*/
                 SELECT 
-                    objid, st_boundary(st_setsrid(omrade, 25833)) AS geom
+                    objid, ST_Boundary(ST_SetSRID(omrade, 25833)) AS geom
                 FROM 
-                    n50kartdata.myr
+                    n50kartdata.myr, reference
                 WHERE
-                    st_intersects(
-                        st_buffer(
-                            st_transform(
-                                st_setsrid(st_makepoint({lng}, {lat}), 4326), 
-                                25833
-                            ),
-                            {radius}
-                        ),
-                        omrade
-                    )
+                    ST_Intersects(relevant_area, omrade)
                 
                 UNION
                 
                 
                 /*Denne henter ut elvekanter fra elvekanter-tabellen*/
                 SELECT 
-                    objid, st_setsrid(grense, 25833) AS geom
+                    objid, ST_SetSRID(grense, 25833) AS geom
                 FROM 
-                    n50kartdata.elvekant
+                    n50kartdata.elvekant, reference
                 WHERE
-                    st_intersects(
-                        st_buffer(
-                            st_transform(
-                                st_setsrid(st_makepoint({lng}, {lat}), 4326), 
-                                25833
-                            ),
-                            {radius}
-                        ),
-                        grense
-                    )
+                    ST_Intersects(relevant_area, grense)
                 )
                 
             SELECT
-                st_asgeojson((st_dump(st_transform(st_polygonize(geom), 4326))).geom) as poly
+                ST_AsGeoJSON((ST_Dump(ST_Transform(ST_Polygonize(geom), 4326))).geom) AS poly
             FROM 
-                (SELECT ST_UnaryUnion(st_snaptogrid(st_collect(geom), 5)) as geom FROM geom_collection); 
+                (
+                    SELECT 
+                        ST_UnaryUnion(ST_SnapToGrid(ST_Collect(geom), 5)) AS geom
+                    FROM 
+                        geom_collection
+                ); 
         """
-        db.query(query)
+        db.query(query, lng, lat, radius)
         results = [{
                     "type": "Feature",
                     "geometry": json.loads(row[0]),
