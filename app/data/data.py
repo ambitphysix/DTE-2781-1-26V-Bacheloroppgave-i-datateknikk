@@ -212,4 +212,4 @@ def search_areas():
                     "geometry": json.loads(row[0])
                     } for row in db.cursor.fetchall()
                 ]
-        return jsonify(results)
+        return jsonify(parse_search_areas(results))
