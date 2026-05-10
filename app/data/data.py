@@ -1,8 +1,10 @@
 from flask import Blueprint, jsonify, request
 from flask_login import login_required
-import json
 from app.db import mySQLDB
 from app.db import myPostgresqlDB
+from app.data.utils import parse_search_areas
+import json
+
 
 BP = Blueprint(
     "data", __name__, static_folder="static", template_folder="templates"
@@ -68,10 +70,12 @@ def spokes():
                 SELECT DISTINCT st_asgeojson(st_transform(st_curvetoline(senterlinje), 4326)) as geom FROM connected_roads;
         """
         db.query(query, lng, lat, lng, lat, radius)
-        rows = db.cursor.fetchall()
-        geojson_list = [json.loads(row[0]) for row in rows]
-        
-        return jsonify(geojson_list)
+        results = [
+            {
+                "type": "Feature",
+                "geometry": json.loads(row[0])
+            } for row in db.cursor.fetchall()]
+        return jsonify(results)
 
 
 @BP.route("/searchAreas")
@@ -203,6 +207,9 @@ def search_areas():
                 (SELECT ST_UnaryUnion(st_snaptogrid(st_collect(geom), 5)) as geom FROM geom_collection); 
         """
         db.query(query)
-        rows = db.cursor.fetchall()
-        geojson_list = [json.loads(row[0]) for row in rows]
-        return jsonify(geojson_list)
+        results = [{
+                    "type": "Feature",
+                    "geometry": json.loads(row[0])
+                    } for row in db.cursor.fetchall()
+                ]
+        return jsonify(results)

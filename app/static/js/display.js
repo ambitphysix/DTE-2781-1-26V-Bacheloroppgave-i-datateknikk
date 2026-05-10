@@ -83,7 +83,7 @@ function displaySpokes(lat, lng, missingPersonCategory, layer){
     getRadii(missingPersonCategory).then( radius => {
         getSpokes(lat, lng, radius.p75*1000).then( data => {
             data.forEach( spoke => {
-                    layer.addData(spoke);
+                    layer.addData(spoke.geometry);
             }
             )
         })
@@ -96,7 +96,7 @@ function displaySearchAreas(lat, lng, missingPersonCategory, layer){
     getRadii(missingPersonCategory).then( radius => {
         getSearchAreas(lat, lng, radius.p95*1000).then( data => {
             data.forEach( searchArea => {
-                    layer.addData(searchArea);
+                    layer.addData(searchArea.geometry);
             }
             )
         })
