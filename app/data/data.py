@@ -36,40 +36,38 @@ def spokes():
     lng = request.args.get('lng')
     radius = request.args.get('radius')
     with myPostgresqlDB() as db:
-        query = """
-                WITH RECURSIVE connected_roads AS (
-                    SELECT 
-                        v.senterlinje, 
-                        v.objid
-                    FROM 
-                        n50kartdata.veglenke v
-                    WHERE 
-                        ST_DWithin(
-                            v.senterlinje, 
-                            ST_Transform(ST_SetSRID(ST_MakePoint(%s, %s), 4326), 25833), 
-                            10.0
-                        )
+        query = f"""
+                WITH RECURSIVE connected_network AS (
+                    SELECT objid, senterlinje FROM n50kartdata.veglenke 
+                    WHERE ST_DWithin(senterlinje, ST_Transform(ST_SetSRID(ST_MakePoint({lng}, {lat}), 4326), 25833), 10.0)
+                    UNION ALL
+                    SELECT objid, senterlinje FROM n50kartdata.lysloype 
+                    WHERE ST_DWithin(senterlinje, ST_Transform(ST_SetSRID(ST_MakePoint({lng}, {lat}), 4326), 25833), 10.0)
+                    UNION ALL
+                    SELECT objid, grense AS senterlinje FROM n50kartdata.elvekant
+                    WHERE ST_DWithin(grense, ST_Transform(ST_SetSRID(ST_MakePoint({lng}, {lat}), 4326), 25833), 10.0)
+                    UNION ALL
+                    SELECT objid, senterlinje FROM n50kartdata.elvbekk
+                    WHERE ST_DWithin(senterlinje, ST_Transform(ST_SetSRID(ST_MakePoint({lng}, {lat}), 4326), 25833), 10.0)
 
                     UNION
 
-                    SELECT 
-                        v.senterlinje, 
-                        v.objid
-                    FROM 
-                        n50kartdata.veglenke v
-                    INNER JOIN 
-                        connected_roads cr ON ST_Intersects(v.senterlinje, cr.senterlinje)
-                    WHERE 
-                        ST_DWithin(
-                            v.senterlinje, 
-                            ST_Transform(ST_SetSRID(ST_MakePoint(%s, %s), 4326), 25833), 
-                            %s
-                        )
+                    SELECT al.objid, al.senterlinje
+                    FROM (
+                        SELECT objid, senterlinje FROM n50kartdata.veglenke
+                        UNION ALL
+                        SELECT objid, senterlinje FROM n50kartdata.lysloype
+                        UNION ALL
+                        SELECT objid, grense AS senterlinje FROM n50kartdata.elvekant
+                        UNION ALL
+                        SELECT objid, senterlinje FROM n50kartdata.elvbekk
+                    ) al
+                    INNER JOIN connected_network cn ON ST_Intersects(al.senterlinje, cn.senterlinje)
+                    WHERE ST_DWithin(al.senterlinje, ST_Transform(ST_SetSRID(ST_MakePoint({lng}, {lat}), 4326), 25833), {radius})
                 )
-
-                SELECT DISTINCT st_asgeojson(st_transform(st_curvetoline(senterlinje), 4326)) as geom FROM connected_roads;
+                SELECT DISTINCT ST_AsGeoJSON(ST_Transform(ST_CurveToLine(senterlinje), 4326)) FROM connected_network;
         """
-        db.query(query, lng, lat, lng, lat, radius)
+        db.query(query)
         results = [
             {
                 "type": "Feature",
