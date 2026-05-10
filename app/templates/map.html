@@ -24,11 +24,35 @@
             var ringLayer = L.layerGroup().addTo(map);
             
             var spokeLayer = L.geoJson(null, {
-                style: { color: 'green', weight: 2 } // Spokes will be Green
+                style: { color: 'green', weight: 2 }
             }
             ).addTo(map);
             
-            var searchAreaLayer = L.geoJson().addTo(map);
+            var searchAreaLayer = L.geoJson(null, {
+                style: function(feature) {
+                    return {
+                        color: 'blue',
+                        weight: 2,
+                        fillOpacity: 0.3
+                    };
+                },
+                onEachFeature: function(feature, layer) {
+                    layer.on({
+                        mouseover: function(e) {
+                            var poly = e.target;
+                            poly.setStyle({
+                                color: 'yellow',
+                                weight: 4,
+                                fillOpacity: 0.7
+                            });
+                            poly.bringToFront();
+                        },
+                        mouseout: function(e) {
+                            searchAreaLayer.resetStyle(e.target);
+                        }
+                    });
+                }
+            }).addTo(map);
 
             var menu = new MissingPersonMenu().addTo(map);
 

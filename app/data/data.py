@@ -73,7 +73,8 @@ def spokes():
         results = [
             {
                 "type": "Feature",
-                "geometry": json.loads(row[0])
+                "geometry": json.loads(row[0]),
+                "properties": {}
             } for row in db.cursor.fetchall()]
         return jsonify(results)
 
@@ -164,24 +165,6 @@ def search_areas():
                 
                 UNION
                 
-                /*Denne henter ut skog-kanter fra myr-tabellen*/
-                SELECT 
-                    objid, st_boundary(st_setsrid(omrade, 25833)) AS geom
-                FROM 
-                    n50kartdata.skog
-                WHERE
-                    st_intersects(
-                        st_buffer(
-                            st_transform(
-                                st_setsrid(st_makepoint({lng}, {lat}), 4326), 
-                                25833
-                            ),
-                            {radius}
-                        ),
-                        omrade
-                    )
-                
-                UNION
                 
                 /*Denne henter ut elvekanter fra elvekanter-tabellen*/
                 SELECT 
@@ -209,7 +192,8 @@ def search_areas():
         db.query(query)
         results = [{
                     "type": "Feature",
-                    "geometry": json.loads(row[0])
+                    "geometry": json.loads(row[0]),
+                    "properties": {}
                     } for row in db.cursor.fetchall()
                 ]
         return jsonify(parse_search_areas(results))
