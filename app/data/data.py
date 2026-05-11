@@ -277,7 +277,7 @@ def search_areas():
             FROM 
                 (
                     SELECT 
-                        ST_UnaryUnion(ST_SnapToGrid(ST_Collect(geom), 5)) AS geom
+                        ST_UnaryUnion(ST_SnapToGrid(ST_Collect(geom), 20)) AS geom
                     FROM 
                         geom_collection
                 ); 
