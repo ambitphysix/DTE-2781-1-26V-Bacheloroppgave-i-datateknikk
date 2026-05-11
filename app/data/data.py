@@ -262,6 +262,16 @@ def search_areas():
                     n50kartdata.bymessigbebyggelse, reference
                 WHERE
                     ST_Intersects(relevant_area, omrade)
+
+                UNION
+
+                /*Denne henter ut åpent område-kanter fra apentomrade-tabellen*/
+                SELECT 
+                    objid, ST_Boundary(ST_SetSRID(omrade, 25833)) AS geom
+                FROM 
+                    n50kartdata.apentomrade, reference
+                WHERE
+                    ST_Intersects(relevant_area, omrade)
                 )
                 
             SELECT
