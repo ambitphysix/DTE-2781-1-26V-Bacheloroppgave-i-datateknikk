@@ -273,7 +273,7 @@ def search_areas():
                 )
                 
             SELECT
-                ST_AsGeoJSON((ST_Dump(ST_Transform(ST_Polygonize(geom), 4326))).geom) AS poly
+                ST_AsGeoJSON((ST_Dump(ST_Polygonize(geom))).geom) AS poly
             FROM 
                 (
                     SELECT 
