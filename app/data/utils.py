@@ -4,7 +4,7 @@ from shapely.geometry import LineString
 from shapely.ops import split
 
 
-MAX_THRESHOLD = 0.1*10**6
+MAX_THRESHOLD = 0.1*10**6 
 MIN_THRESHOLD = 0.02*10**6
 
 
