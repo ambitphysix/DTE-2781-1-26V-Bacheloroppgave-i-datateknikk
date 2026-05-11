@@ -16,11 +16,13 @@ export function getSpokes(lat, lng, radius){
     )
 }
 
-export function getSearchAreas(lat, lng, radius){
+export function getSearchAreas(lat, lng, radius, minAreaValue, maxAreaValue){
     const params = new URLSearchParams();
     params.append('lat', lat);
     params.append('lng', lng);
     params.append('radius', radius);
+    params.append('minAreaValue', minAreaValue);
+    params.append('maxAreaValue', maxAreaValue);
     return fetch(`/data/searchAreas?${params}`)
     .then(response =>
         {return response.json()}
