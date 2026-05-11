@@ -35,9 +35,10 @@
             var searchAreaLayer = L.geoJson(null, {
                 style: function(feature) {
                     return {
-                        color: 'blue',
-                        weight: 2,
-                        fillOpacity: 0.3
+                        color: 'black',
+                        weight: 1,
+                        fillColor: 'grey',
+                        fillOpacity: 0.4
                     };
                 },
                 onEachFeature: function(feature, layer) {
@@ -45,8 +46,9 @@
                         mouseover: function(e) {
                             var poly = e.target;
                             poly.setStyle({
-                                color: 'yellow',
-                                weight: 4,
+                                color: 'black',
+                                fillColor: 'white',
+                                weight: 2,
                                 fillOpacity: 0.7
                             });
                             poly.bringToFront();
