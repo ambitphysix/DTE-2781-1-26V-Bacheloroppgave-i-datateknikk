@@ -4,13 +4,13 @@ from shapely.geometry import LineString
 from shapely.ops import split
 
 
-MAX_THRESHOLD = 0.1*10**6
-MIN_THRESHOLD = 0.02*10**6
+MAX_THRESHOLD = 0.10*10**6
+MIN_THRESHOLD = 0.04*10**6
 
 
-def remove_slivers(gdf: gpd.GeoDataFrame) -> gpd.GeoDataFrame:
-    small_polygons = gdf[gdf.area < MIN_THRESHOLD]
-    big_polygons = gdf[gdf.area >= MIN_THRESHOLD].copy()
+def remove_slivers(gdf: gpd.GeoDataFrame, minArea: float) -> gpd.GeoDataFrame:
+    small_polygons = gdf[gdf.area < minArea*1000]
+    big_polygons = gdf[gdf.area >= minArea*1000].copy()
     for idx, poly in small_polygons.iterrows():
         edge_intersections = big_polygons.geometry.intersection(poly.geometry)
         if edge_intersections.length.max() <= 0:
@@ -20,8 +20,8 @@ def remove_slivers(gdf: gpd.GeoDataFrame) -> gpd.GeoDataFrame:
     return big_polygons
 
 
-def slice_polys(gdf: gpd.GeoDataFrame) -> gpd.GeoDataFrame:
-    big_polygons = gdf[gdf.area >= MAX_THRESHOLD].copy()
+def slice_polys(gdf: gpd.GeoDataFrame, maxArea: float) -> gpd.GeoDataFrame:
+    big_polygons = gdf[gdf.area >= maxArea*1000].copy()
     while not big_polygons.empty:
         new_rows = []
         for idx, poly in big_polygons.iterrows():
@@ -50,12 +50,12 @@ def slice_polys(gdf: gpd.GeoDataFrame) -> gpd.GeoDataFrame:
         if new_rows:
             new_gdf = gpd.GeoDataFrame(new_rows, crs=gdf.crs)
             gdf = pd.concat([gdf, new_gdf], ignore_index=True)
-        big_polygons = gdf[gdf.area >= MAX_THRESHOLD].copy()
+        big_polygons = gdf[gdf.area >= maxArea*1000].copy()
     return gdf
 
 
-def parse_search_areas(search_areas: list[dict]) -> gpd.GeoDataFrame:
+def parse_search_areas(search_areas: list[dict], minArea: float, maxArea: float) -> gpd.GeoDataFrame:
     gdf = gpd.GeoDataFrame.from_features(search_areas)
-    gdf = remove_slivers(gdf)
-    gdf = slice_polys(gdf)
+    gdf = remove_slivers(gdf, minArea)
+    gdf = slice_polys(gdf, maxArea)
     return gdf.set_crs(epsg=25833).to_crs(epsg=4326).to_geo_dict()

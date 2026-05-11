@@ -10,6 +10,7 @@
     <script type="module">
         import { displayMapObjects } from "{{ url_for('static', filename='js/display.js') }}";
         import { MissingPersonMenu } from "{{ url_for('static', filename='js/display.js') }}";
+        import { minmaxAreaMenu } from "{{ url_for('static', filename='js/display.js') }}";
         (function () {
             var map = L.map('map').setView([64.5, 10], 5);
 
@@ -27,7 +28,10 @@
                 style: { color: 'green', weight: 2 }
             }
             ).addTo(map);
-            
+
+            var minmaxForm = new minmaxAreaMenu().addTo(map);
+            var menu = new MissingPersonMenu().addTo(map);
+
             var searchAreaLayer = L.geoJson(null, {
                 style: function(feature) {
                     return {
@@ -54,8 +58,6 @@
                 }
             }).addTo(map);
 
-            var menu = new MissingPersonMenu().addTo(map);
-
             var baseLayers = {
                 "Bakgrunnskart": tileLayer,
             };
@@ -69,12 +71,17 @@
 
             map.on("click", (e) => {
                 const selectedCategory = document.getElementById("missingPersonCategoryMenu").value;
+                const minAreaValue = document.getElementById("minArea").value;
+                const maxAreaValue = document.getElementById("maxArea").value;
+                console.log(selectedCategory, minAreaValue, maxAreaValue)
                 displayMapObjects(
                     e,
                     ringLayer,
                     spokeLayer,
                     searchAreaLayer,
-                    selectedCategory);
+                    minAreaValue,
+                    maxAreaValue,
+                    selectedCategory,);
             } 
             
         )

@@ -2,7 +2,7 @@ import {getRadii} from "./requests.js"
 import {getSpokes} from "./requests.js"
 import {getSearchAreas} from "./requests.js"
 
-export function displayMapObjects(eventHandler, ringLayer, spokeLayer, searchAreaLayer, missingPersonCategory) {
+export function displayMapObjects(eventHandler, ringLayer, spokeLayer, searchAreaLayer, minAreaValue, maxAreaValue, missingPersonCategory) {
     displayRings(
         eventHandler.latlng.lat,
         eventHandler.latlng.lng,
@@ -27,7 +27,9 @@ export function displayMapObjects(eventHandler, ringLayer, spokeLayer, searchAre
         eventHandler.latlng.lat,
         eventHandler.latlng.lng,
         missingPersonCategory,
-        searchAreaLayer
+        searchAreaLayer,
+        minAreaValue,
+        maxAreaValue
     );
 };
 
@@ -91,10 +93,10 @@ function displaySpokes(lat, lng, missingPersonCategory, layer){
     )
 };
 
-function displaySearchAreas(lat, lng, missingPersonCategory, layer){
+function displaySearchAreas(lat, lng, missingPersonCategory, layer, minAreaValue, maxAreaValue){
     layer.clearLayers();
     getRadii(missingPersonCategory).then( radius => {
-        getSearchAreas(lat, lng, radius.p75*1000).then( data => {
+        getSearchAreas(lat, lng, radius.p75*1000, minAreaValue, maxAreaValue).then( data => {
             layer.addData(data)
             }
             )
@@ -118,6 +120,29 @@ export const MissingPersonMenu = L.Control.extend({
         L.DomEvent.disableClickPropagation(select);
         L.DomEvent.disableScrollPropagation(select);
         return select
+    },
+
+    onRemove: function(map) {
+        // Nothing to do here
+    }
+});
+
+
+export const minmaxAreaMenu = L.Control.extend({
+    options: {
+        position: 'topright'
+    },
+
+    onAdd: function() {
+        var form = L.DomUtil.create('form', 'minmaxAreaMenu');
+        form.id = "minmaxAreaMenu"
+        form.innerHTML = `
+            <input type="number" id="minArea" placeholder="Min Area" class="area-input">
+            <input type="number" id="maxArea" placeholder="Max Area" class="area-input">
+        `
+        L.DomEvent.disableClickPropagation(form);
+        L.DomEvent.disableScrollPropagation(form);
+        return form
     },
 
     onRemove: function(map) {

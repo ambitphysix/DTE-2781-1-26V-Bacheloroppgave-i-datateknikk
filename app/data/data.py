@@ -83,6 +83,8 @@ def search_areas():
     lat = request.args.get('lat')
     lng = request.args.get('lng')
     radius = request.args.get('radius')
+    minArea = request.args.get('minAreaValue')
+    maxArea = request.args.get('maxAreaValue')
     with myPostgresqlDB() as db:
         query = """
             WITH 
@@ -260,16 +262,6 @@ def search_areas():
                     n50kartdata.bymessigbebyggelse, reference
                 WHERE
                     ST_Intersects(relevant_area, omrade)
-
-                UNION
-
-                /*Denne henter ut bygningområde-kanter fra bygningområde-tabellen*/
-                SELECT 
-                    objid, ST_Boundary(ST_SetSRID(omrade, 25833)) AS geom
-                FROM 
-                    n50kartdata.bygning_omrade, reference
-                WHERE
-                    ST_Intersects(relevant_area, omrade)
                 )
                 
             SELECT
@@ -289,4 +281,4 @@ def search_areas():
                     "properties": {}
                     } for row in db.cursor.fetchall()
                 ]
-        return jsonify(parse_search_areas(results))
+        return jsonify(parse_search_areas(results, float(minArea), float(maxArea)))
