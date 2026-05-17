@@ -1,0 +1,81 @@
+import { displayMapObjects } from './display.js';
+import { MissingPersonMenu } from './display.js';
+import { minmaxAreaMenu } from './display.js';
+export function displayMap() {
+    var map = L.map('map').setView([64.5, 10], 5);
+
+    var tileLayer = L.tileLayer.wms(
+        'https://wms.geonorge.no/skwms1/wms.topo', {
+            layers: 'topo',
+            format: 'image/png',
+            attribution: '&copy; Kartverket'
+        }
+    ).addTo(map);
+
+    var ringLayer = L.layerGroup().addTo(map);
+    
+    var spokeLayer = L.geoJson(null, {
+        style: { color: 'green', weight: 2 }
+    }
+    ).addTo(map);
+
+    var minmaxForm = new minmaxAreaMenu().addTo(map);
+    var menu = new MissingPersonMenu().addTo(map);
+
+    var searchAreaLayer = L.geoJson(null, {
+        style: function(feature) {
+            return {
+                color: 'black',
+                weight: 1,
+                fillColor: 'grey',
+                fillOpacity: 0.4
+            };
+        },
+        onEachFeature: function(feature, layer) {
+            layer.on({
+                mouseover: function(e) {
+                    var poly = e.target;
+                    poly.setStyle({
+                        color: 'black',
+                        fillColor: 'white',
+                        weight: 2,
+                        fillOpacity: 0.7
+                    });
+                    poly.bringToFront();
+                },
+                mouseout: function(e) {
+                    searchAreaLayer.resetStyle(e.target);
+                }
+            });
+        }
+    }).addTo(map);
+
+    var baseLayers = {
+        "Bakgrunnskart": tileLayer,
+    };
+
+    var overlays = {
+        "Eiker": spokeLayer,
+        "Søketeiger": searchAreaLayer
+    };
+
+    L.control.layers(baseLayers, overlays).addTo(map);
+
+    map.on("click", (e) => {
+        const selectedCategory = document.getElementById("missingPersonCategoryMenu").value;
+        const minAreaValue = document.getElementById("minArea").value;
+        const maxAreaValue = document.getElementById("maxArea").value;
+        console.log(selectedCategory, minAreaValue, maxAreaValue)
+        displayMapObjects(
+            e,
+            ringLayer,
+            spokeLayer,
+            searchAreaLayer,
+            minAreaValue,
+            maxAreaValue,
+            selectedCategory,);
+    } 
+    
+    )
+    return map
+};
