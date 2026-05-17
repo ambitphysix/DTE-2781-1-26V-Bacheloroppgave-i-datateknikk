@@ -1,6 +1,7 @@
 import { displayMapObjects } from './display.js';
-import { MissingPersonMenu } from './display.js';
-import { minmaxAreaMenu } from './display.js';
+import { MissingPersonMenu } from './MissingPersonMenu.js'
+import { MinMaxAreaMenu } from './MinMaxAreaMenu.js';
+
 export function displayMap() {
     var map = L.map('map').setView([64.5, 10], 5);
 
@@ -19,7 +20,7 @@ export function displayMap() {
     }
     ).addTo(map);
 
-    var minmaxForm = new minmaxAreaMenu().addTo(map);
+    var minmaxForm = new MinMaxAreaMenu().addTo(map);
     var menu = new MissingPersonMenu().addTo(map);
 
     var searchAreaLayer = L.geoJson(null, {
