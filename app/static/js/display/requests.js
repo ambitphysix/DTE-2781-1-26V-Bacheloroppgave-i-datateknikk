@@ -23,7 +23,7 @@ export function getSearchAreas(lat, lng, radius, minAreaValue, maxAreaValue){
     params.append('radius', radius);
     params.append('minAreaValue', minAreaValue);
     params.append('maxAreaValue', maxAreaValue);
-    return fetch(`/data/searchAreas?${params}`)
+    return fetch(`/data/polygons?${params}`)
     .then(response =>
         {return response.json()}
     )

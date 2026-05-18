@@ -77,7 +77,7 @@ def spokes():
         return jsonify(results)
 
 
-@BP.route("/searchAreas")
+@BP.route("/polygons")
 @login_required
 def search_areas():
     lat = request.args.get('lat')

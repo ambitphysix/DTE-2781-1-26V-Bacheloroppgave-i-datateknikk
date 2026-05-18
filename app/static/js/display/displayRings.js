@@ -1,3 +1,5 @@
+import {getRadii, getSpokes, getSearchAreas} from "./requests.js"
+
 export function displayRings(lat, lng, layer, missingPersonCategory){
     layer.clearLayers();
     getRadii(missingPersonCategory).then( data => {

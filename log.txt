@@ -1,0 +1,333 @@
+commit 6f244f28a8fc8c0d070bf780f60a469139be7fe2
+Author: Jens Petter <jth047@uit.no>
+Date:   Sun May 17 09:20:24 2026 +0200
+
+    Ryddet litt i ulike javascript-funksjoner og menyer
+
+commit 6dfc5cebb3e8e9727876b4de12f3ddce1b7fd1c7
+Author: Jens Petter <jth047@uit.no>
+Date:   Sun May 17 09:14:11 2026 +0200
+
+    Flyttet egenprodusert javascriptkode til egen mappe i static/js/display.
+
+commit 0b495e7bff9186c9dec9e0a497a47b7750519a55
+Author: Jens Petter <jth047@uit.no>
+Date:   Sun May 17 09:10:16 2026 +0200
+
+    Flyttet displayMap ut i map.js
+
+commit 241778d082efc70c503bf0ba53f4e85e1bda9d31
+Author: tbo070 <131162638+tbo070@users.noreply.github.com>
+Date:   Wed May 13 14:02:37 2026 +0200
+
+    Add configuration for MariaDB and PostGIS databases
+
+commit a62e4dd1ab644f9f3c28db97bf1f071cef8c8df9
+Merge: 5cd92d3 accf854
+Author: tbo070 <131162638+tbo070@users.noreply.github.com>
+Date:   Wed May 13 13:27:03 2026 +0200
+
+    Merge pull request #24 from ambitphysix/test-master-13mai-UIdesign
+    
+    Test master 13mai u idesign
+
+commit accf854142b6918b8e1e458b27dcd42afb0e9132
+Author: tbo070 <131162638+tbo070@users.noreply.github.com>
+Date:   Wed May 13 13:19:08 2026 +0200
+
+    Delete .gitignore
+
+commit fec3512981c234d0cf7c6362a4b5d1fb994df7b1
+Author: tbo070 <131162638+tbo070@users.noreply.github.com>
+Date:   Wed May 13 13:18:01 2026 +0200
+
+    Delete .flaskenv
+
+commit 94180d216ca94ec1190d57071c4e615b8248cfe9
+Author: tbo070 <131162638+tbo070@users.noreply.github.com>
+Date:   Wed May 13 13:16:33 2026 +0200
+
+    Delete app/config/config.ini
+
+commit 785ce3f194a7e269e9d0b33fdb1b7232033b9161
+Author: Tor Richard <tbo070@post.uit.no>
+Date:   Wed May 13 13:04:41 2026 +0200
+
+    Update styles.css
+
+commit 5656d388207f74558f113c21cf27fdb6dcf12715
+Merge: d390eb3 5cd92d3
+Author: Tor Richard <tbo070@post.uit.no>
+Date:   Mon May 11 18:28:03 2026 +0200
+
+    Merge branch 'master' into test-master-11mai
+
+commit 5cd92d346db3198b4411671bd99762d7c195451e
+Author: Jens Petter <jth047@uit.no>
+Date:   Mon May 11 18:01:28 2026 +0200
+
+    Lagt til snoisbre-tabellen i søketeigspørringa.
+
+commit d390eb3efa0a04895a506c344f81c16a3060af96
+Merge: f79e979 6628d6a
+Author: Tor Richard <tbo070@post.uit.no>
+Date:   Mon May 11 17:52:23 2026 +0200
+
+    Merge branch 'master' into test-master-11mai
+
+commit 6628d6a660ef09c3e0affd83da5a2dd4c12feb79
+Author: Jens Petter <jth047@uit.no>
+Date:   Mon May 11 17:50:43 2026 +0200
+
+    Lagt til områdekant fra apentomrade-tabellen i søketeigspørring pga. fjellområder
+
+commit f79e979e13063ce29f7c405eb809ee3cc41d5f86
+Merge: 70d052a c9e1b0f
+Author: Tor Richard <tbo070@post.uit.no>
+Date:   Mon May 11 17:40:50 2026 +0200
+
+    Merge branch 'master' into test-master-11mai
+
+commit 70d052a535754c4f00ea9612880baacfd8710f0e
+Author: Tor Richard <tbo070@post.uit.no>
+Date:   Mon May 11 17:30:51 2026 +0200
+
+    Update utils.py
+
+commit c9e1b0f4fe8c53da886d412a36e74f231083abad
+Author: Jens Petter <jth047@uit.no>
+Date:   Mon May 11 15:54:08 2026 +0200
+
+    Lagt til felter for minimumsstørrelse på teig og maksimumsstørrelse som kontrollelement i Leaflet-kartet. Enheten er antall mål (0.04 km² = 40 mål)
+
+commit 30a6f477f0dc5b3922c69b5509b9e8802bb5b2ab
+Author: Tor Richard <tbo070@post.uit.no>
+Date:   Mon May 11 13:24:29 2026 +0200
+
+    lokal setup
+
+commit 5bdad9ce39a97923caac0cb7ab3c25c376e152cd
+Author: Jens Petter <jth047@uit.no>
+Date:   Mon May 11 12:35:52 2026 +0200
+
+    Lagt til splitting av polygoner som er for store
+
+commit 318f9a415b6c7c849f7222d6f60924415ffb82c4
+Author: Jens Petter <jth047@uit.no>
+Date:   Mon May 11 11:33:41 2026 +0200
+
+    Fikset en bug ved sammenslåing av små polygoner
+
+commit 00b59a0da65364caf6fb5f71797860f105a3c534
+Author: Jens Petter <jth047@uit.no>
+Date:   Mon May 11 11:13:43 2026 +0200
+
+    Lagt til funksjonalitet for å smelte inn små slengerteiger inn i større naboteiger basert på lengste delte grense.
+
+commit a3ae810328304f171b8f14bad1f541c843927caf
+Author: Jens Petter <jth047@uit.no>
+Date:   Mon May 11 09:47:10 2026 +0200
+
+    Endepunkt searchAreas returnerer nå data i EPSG 25833 for prosessering i app/data/utils.py:parse_search_areas(), som i sin tur returnerer en GeoJSON featuresCollection. Endert display.js til å kunne ta imot en featuresCollection i stedet for å itererer over individuelle features.
+
+commit 0719203371c4763b05f7f723f857bbb67d68d707
+Author: Jens Petter <jth047@uit.no>
+Date:   Sun May 10 22:44:02 2026 +0200
+
+    Lagt til en drøss med nye tabeller i søketeig-spørringa
+
+commit f1039efbe36408fd18bcdaae6d68068a520bb2c1
+Author: Jens Petter <jth047@uit.no>
+Date:   Sun May 10 22:17:06 2026 +0200
+
+    Forbedret eike-spørring og lagt til elvbekk-data som ledelinjer
+
+commit dadc84ca3b14c953dd443f8b4ffb4b1711ca42d1
+Author: Jens Petter <jth047@uit.no>
+Date:   Sun May 10 21:17:03 2026 +0200
+
+    Ryddet litt i søketeigspørring for lesbarhet
+
+commit a84f9602a295f28eddb9b27ce1fd716df2a19745
+Author: Jens Petter <jth047@uit.no>
+Date:   Sun May 10 20:48:34 2026 +0200
+
+    Lagt til styling ved hoverering over søketeiger. Også fikset litt på geoJSON-formatet på spokes- og searchAreas-endepunktene.
+
+commit ae1a7d92c5ec0ba8046460f6e2e22ae69925ed89
+Author: Jens Petter <jth047@uit.no>
+Date:   Sun May 10 18:06:23 2026 +0200
+
+    Lagt til bibliotek geopandas i requirements.txt
+
+commit 5fedabb1960ba194816d9e19721adddc4a585432
+Author: Jens Petter <jth047@uit.no>
+Date:   Sun May 10 17:57:37 2026 +0200
+
+    Lagt til kobling mot postprossessering av teigene fra endepunkt /searchAreas, med funksjon parse_search_areas fra data/utils.py
+
+commit a82193fd991ef2f60f645478360d458eb3ae8f6d
+Author: Jens Petter <jth047@uit.no>
+Date:   Sun May 10 17:12:39 2026 +0200
+
+    Endret returverdi i endepunkter spoke og searchAreas slik at de returnerer geojson-objekter i tråd med RFC 7946
+
+commit aa0b621df4f540ce9aa74c1dc3b98dea1445dca3
+Author: Jens Petter <jth047@uit.no>
+Date:   Sat May 9 15:28:32 2026 +0200
+
+    Lagt til søketeiggenerering. Endepunkt m/spørring i data.py, internt funksjonskall mot endepunkter i requests.js og visningsfunksjonalitet i display.js og map.html. Har også lagt til flere lag i Leaflet-kartet for henholdsvis bakgrunnskart, eiker og søketeiger.
+
+commit 3f50931a4d0b1dba87450c3528e8d868d37afa34
+Author: Jens Petter <jth047@uit.no>
+Date:   Sun May 3 12:55:23 2026 +0200
+
+    Lagt til rekursjon på eikespørringa så eikene følger hele veien ut til p75.
+
+commit dff36c7468dea93b7168c3778d00664bc857c980
+Merge: b942cf7 74285f3
+Author: Jens Petter <jth047@uit.no>
+Date:   Thu Apr 30 15:04:16 2026 +0200
+
+    Merge branch 'master' of github.com:ambitphysix/DTE-2781-1-26V-Bacheloroppgave-i-datateknikk
+
+commit 74285f310bc319e7b1140f3f2e88fd224fd75972
+Merge: 2f2af4d 80f7fcb
+Author: Jens Petter <143332229+ambitphysix@users.noreply.github.com>
+Date:   Thu Apr 30 15:02:01 2026 +0200
+
+    Merge pull request #23 from ambitphysix/revert-22-teste-master01
+    
+    Revert "Teste master01"
+
+commit 80f7fcb253f380f81d30167facfc55484422206c
+Author: Jens Petter <143332229+ambitphysix@users.noreply.github.com>
+Date:   Thu Apr 30 15:01:37 2026 +0200
+
+    Revert "Teste master01"
+
+commit b942cf7e3c3909b79ccfef041cf4ab0be6b03e37
+Author: Jens Petter <jth047@uit.no>
+Date:   Thu Apr 30 14:55:27 2026 +0200
+
+    Lagt til funksjonalitet for å tegne eiker
+
+commit 2f2af4d730d98af2960982fcde35913fa42fb049
+Merge: fb5a0e5 f5451ee
+Author: tbo070 <131162638+tbo070@users.noreply.github.com>
+Date:   Thu Apr 30 14:15:19 2026 +0200
+
+    Merge pull request #22 from ambitphysix/teste-master01
+    
+    Teste master01
+
+commit f5451eea3e24cb3a3de967d25dcef140676dfbce
+Author: Tor Richard <tbo070@post.uit.no>
+Date:   Thu Apr 30 13:46:56 2026 +0200
+
+    Update .gitignore
+
+commit fb5a0e596f310e4426fe37e2f387dad32f5e8faf
+Author: Jens Petter <jth047@uit.no>
+Date:   Thu Apr 30 13:05:29 2026 +0200
+
+    Lagt til tooltip på IPP-markør
+
+commit b9715b582171bc1943343c72a35bd3f268f14a80
+Merge: 0979860 a1582cc
+Author: Jens Petter <143332229+ambitphysix@users.noreply.github.com>
+Date:   Thu Apr 30 12:59:13 2026 +0200
+
+    Merge pull request #21 from ambitphysix/20-tegne-ipp
+    
+    Lagt til ipp.png i images-mappa og ny funksjon displayIPP i display.j…
+
+commit a1582cc3b889219efe0d6f1109000cdb1ee236dc
+Author: Jens Petter <jth047@uit.no>
+Date:   Thu Apr 30 12:58:39 2026 +0200
+
+    Lagt til ipp.png i images-mappa og ny funksjon displayIPP i display.js som kjører i displayMapObjects.
+
+commit 5f742fe691950f7f207e0d4995b60f133e097606
+Author: Tor Richard <tbo070@post.uit.no>
+Date:   Wed Apr 29 16:57:09 2026 +0200
+
+    Delete config.ini
+
+commit 321ed7318e3c27f0ce3ca0ee2f084d1dc31a0188
+Author: Tor Richard <tbo070@post.uit.no>
+Date:   Wed Apr 29 16:51:32 2026 +0200
+
+    Create .gitignore
+
+commit 0979860c012e530403aec8b760acdd62968f1a0c
+Author: Jens Petter <jth047@uit.no>
+Date:   Tue Apr 28 18:28:21 2026 +0200
+
+    Lagt til SQL-script for initiering av MariaDB-databasen som er nødvendig for appen
+
+commit d781e49a4cafbaa33bbf912c84566ef73d8bbd58
+Author: Jens Petter <jth047@uit.no>
+Date:   Tue Apr 28 18:23:32 2026 +0200
+
+    Fått lagt til meny i kart for savnetkategori og koblet denne til de ulike radiusene på sirklene
+
+commit 06facc8a4b87887f3a875a6355fac856aaccf9eb
+Author: Jens Petter <jth047@uit.no>
+Date:   Tue Apr 28 10:29:05 2026 +0200
+
+    Lagt til ny versjon av offline Leaflet-modul (v 1.9.4). Lagt til generell displayMapObjects-funksjon i display.js som kalles ved trykk i kartet. Vi kan kalle andre tegnefunksjoner fra denne.
+
+commit d53c397c234397de0b368f152bd765721abf7014
+Author: Jens Petter <jth047@uit.no>
+Date:   Mon Apr 27 20:51:34 2026 +0200
+
+    foo
+
+commit f765434e874b3667823f11efaa3e682d1c25ce57
+Merge: 38ef5ca 44f9aa5
+Author: Jens Petter <143332229+ambitphysix@users.noreply.github.com>
+Date:   Sun Apr 26 15:12:54 2026 +0200
+
+    Merge pull request #19 from ambitphysix/16-lage-login
+    
+    16 lage login
+
+commit 44f9aa58214ff04e923fde832f50751b03f371e9
+Author: Jens Petter <jth047@uit.no>
+Date:   Sun Apr 26 15:12:08 2026 +0200
+
+    Refaktor av prosjektet til bruk av blueprints. Lagt til login og registreringsløsning for nye brukere med kobling mot en MariaDB-database.
+
+commit d98e03d5d4888081808fcbad9cba87b9f2a2a994
+Author: Jens Petter <jth047@uit.no>
+Date:   Sat Apr 25 20:49:44 2026 +0200
+
+    Lagt til MySQLDB.py og config
+
+commit 38ef5cacd50eab3f16e102d4bca716db2be70ec4
+Merge: 46b9947 1491918
+Author: Jens Petter <143332229+ambitphysix@users.noreply.github.com>
+Date:   Sat Apr 25 17:14:15 2026 +0200
+
+    Merge pull request #18 from ambitphysix/17-legg-til-header-og-bottom-bar-på-nettsiden
+    
+    Lagt til top bar og et midlertidig bilde på hjem
+
+commit 149191895ebfdb93e0f68a4835ec99f6b7fae019
+Author: Jens Petter <jth047@uit.no>
+Date:   Sat Apr 25 17:12:43 2026 +0200
+
+    Lagt til top bar og et midlertidig bilde på hjem
+
+commit 46b994711b6951e068a74e33aeb5a411754b5e95
+Author: Jens Petter <jth047@uit.no>
+Date:   Thu Apr 16 23:39:46 2026 +0200
+
+    Added Kartverkets example leaflet implementation.
+
+commit 5beaa1fea79776cebf855d8769ef17c95e0c1d8a
+Author: Jens Petter <jth047@uit.no>
+Date:   Thu Apr 16 21:18:23 2026 +0200
+
+    Initial commit.

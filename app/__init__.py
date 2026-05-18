@@ -1,15 +1,13 @@
 from app.app import application
 from app.user import User
-from app.config import config
 from flask_login import LoginManager
 from app.auth import auth_bp
 from app.register import register_bp
 from app.index import index_bp
 from app.map import map_bp
 from app.data import data_bp
-from flask_login import current_user
 
-# Initialize login manager
+
 login_manager = LoginManager()
 login_manager.init_app(application)
 login_manager.login_view = "auth.login"

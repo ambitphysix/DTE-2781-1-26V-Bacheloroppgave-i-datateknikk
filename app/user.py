@@ -4,6 +4,10 @@ from flask_login import login_user, UserMixin
 
 
 class User(UserMixin):
+    """
+    Klasse som brukes for brukerhåndtering i login-løsningen.
+    Implementert i tråd med dokumentasjonen for UserMixin.
+    """
     def __init__(self, UserId, UserName, PasswordHash):
         self.UserId = UserId
         self.UserName = UserName
@@ -31,5 +35,4 @@ class User(UserMixin):
         return False
 
     def get_id(self):
-        """Return the user id to satisfy Flask-Login's requirements."""
         return self.UserId

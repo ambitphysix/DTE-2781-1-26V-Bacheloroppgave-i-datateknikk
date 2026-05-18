@@ -1,3 +1,5 @@
+import {getRadii, getSpokes, getSearchAreas} from "./requests.js"
+
 export function displaySpokes(lat, lng, missingPersonCategory, layer){
     layer.clearLayers();
     getRadii(missingPersonCategory).then( radius => {
