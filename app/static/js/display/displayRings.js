@@ -1,5 +1,7 @@
 import {getRadii, getSpokes, getSearchAreas} from "./requests.js"
 
+/**Henter og tegner opp ringer  og IPP fra sykkelhjulmodellen i kartet basert på IPPs posisjon og kategorien til den savnede.**/
+
 export function displayRings(lat, lng, layer, missingPersonCategory){
     layer.clearLayers();
     getRadii(missingPersonCategory).then( data => {

@@ -4,6 +4,8 @@ import {displaySpokes} from "./displaySpokes.js"
 import {displaySearchAreas} from "./displaySearchAreas.js"
 
 
+/**Samlefunksjon som henter og tegner opp aktuell grafikk på kartet basert på valgte parametre i brukergrensesnittet.**/
+
 export function displayMapObjects(eventHandler, ringLayer, spokeLayer, searchAreaLayer, minAreaValue, maxAreaValue, missingPersonCategory) {
     displayRings(
         eventHandler.latlng.lat,

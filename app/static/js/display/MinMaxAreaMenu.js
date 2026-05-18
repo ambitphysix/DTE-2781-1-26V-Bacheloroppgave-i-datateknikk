@@ -1,3 +1,7 @@
+/* 
+En egendefinert Leaflet-kontroll (UI-komponent) som legger til et input-skjema for minimums- og maksimumsareal i kartet.
+*/
+
 export const MinMaxAreaMenu = L.Control.extend({
     options: {
         position: 'topright'

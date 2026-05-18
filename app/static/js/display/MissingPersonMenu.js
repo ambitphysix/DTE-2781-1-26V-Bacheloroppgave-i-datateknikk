@@ -1,3 +1,7 @@
+/* 
+En egendefinert Leaflet-kontroll (UI-komponent) som legger til et seleksjon av savnetkategori i kartet.
+*/
+
 export const MissingPersonMenu = L.Control.extend({
     onAdd: function(missingPersonCategories) {
         var select = L.DomUtil.create('select', 'missingPersonCategoryMenu');
