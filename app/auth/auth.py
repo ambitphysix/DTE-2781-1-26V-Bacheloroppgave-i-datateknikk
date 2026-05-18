@@ -11,6 +11,8 @@ BP = Blueprint(
 
 @BP.route("/login", methods=["GET", "POST"])
 def login():
+    """
+    Håndterer innlogging av brukere."""
     if current_user.is_authenticated:
         return redirect(url_for("index.index"))
 
@@ -30,6 +32,8 @@ def login():
 @BP.route("/logout")
 @login_required
 def logout():
+    """
+    Logger ut den nåværende innloggede brukeren."""
     logout_user()
     flash("Du har blitt logget ut.", "success")
     return redirect(url_for("index.index"))

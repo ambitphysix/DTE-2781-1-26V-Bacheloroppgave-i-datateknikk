@@ -14,6 +14,8 @@ BP = Blueprint(
 @BP.route("/radii/<missingPersonCategory>")
 @login_required
 def radii(missingPersonCategory):
+    """
+    Henter statistiske søkeradiuser for en spesifikk kategori savnet person."""
     with mySQLDB() as db:
         query = "SELECT * from missing_categories WHERE kategori=%s;"
         db.query(query, missingPersonCategory)
@@ -23,6 +25,8 @@ def radii(missingPersonCategory):
 @BP.route("/missingPersonCategories")
 @login_required
 def missingPersonCategories():
+    """
+    Henter tilgjengelige savnetkategorier."""
     with mySQLDB() as db:
         query = "SELECT kategori FROM missing_categories;"
         db.query(query)
@@ -32,6 +36,8 @@ def missingPersonCategories():
 @BP.route("/spokes")
 @login_required
 def spokes():
+    """
+    Henter eiker fra IPP ut til spesifikk radius."""
     lat = request.args.get('lat')
     lng = request.args.get('lng')
     radius = request.args.get('radius')
@@ -80,6 +86,8 @@ def spokes():
 @BP.route("/polygons")
 @login_required
 def search_areas():
+    """
+    Henter søketeiger rundt IPP ut til spesifikk radius, krever minimums- og maksimumsareal for teigstørrelse."""
     lat = request.args.get('lat')
     lng = request.args.get('lng')
     radius = request.args.get('radius')

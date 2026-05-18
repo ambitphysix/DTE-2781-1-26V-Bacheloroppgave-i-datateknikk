@@ -1,11 +1,11 @@
 import psycopg
 from app.config import config
 
-"""
-Vi bruker denne for å gjøre kall mot PostGIS-databasen vår.
-"""
 
 class myPostgresqlDB:
+    """
+    Brukes for å gjøre spørringer mot PostGIS-databasen.
+    """
     def __init__(self) -> None:
 
         self.configuration = {

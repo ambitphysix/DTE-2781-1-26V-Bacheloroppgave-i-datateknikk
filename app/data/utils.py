@@ -9,6 +9,9 @@ MIN_THRESHOLD = 0.04*10**6
 
 
 def remove_slivers(gdf: gpd.GeoDataFrame, minArea: float) -> gpd.GeoDataFrame:
+    """
+    Fjerner små polygoner (slivers) fra en GeoDataFrame og slår dem sammen med 
+    det tilstøtende polygonet som de deler lengst grense med."""
     small_polygons = gdf[gdf.area < minArea*1000]
     big_polygons = gdf[gdf.area >= minArea*1000].copy()
     for idx, poly in small_polygons.iterrows():
@@ -21,6 +24,12 @@ def remove_slivers(gdf: gpd.GeoDataFrame, minArea: float) -> gpd.GeoDataFrame:
 
 
 def slice_polys(gdf: gpd.GeoDataFrame, maxArea: float) -> gpd.GeoDataFrame:
+    """
+    Deler opp polygoner som er større enn en gitt arealgrense.
+
+    Funksjonen looper gjennom polygoner og deler dem i to (enten vertikalt 
+    eller horisontalt basert på formen) via polygonets sentroid, helt til 
+    ingen polygoner i datasettet har et areal som overstiger maxArea * 1000."""
     big_polygons = gdf[gdf.area >= maxArea*1000].copy()
     while not big_polygons.empty:
         new_rows = []
@@ -55,6 +64,11 @@ def slice_polys(gdf: gpd.GeoDataFrame, maxArea: float) -> gpd.GeoDataFrame:
 
 
 def parse_search_areas(search_areas: list[dict], minArea: float, maxArea: float) -> gpd.GeoDataFrame:
+    """
+    Postprosesserer søketeiger ved å fjerne små polygoner, og dele opp for store polygoner.
+
+    Metoden antar at input-dataene er i EPSG:25833 (UTM sone 33N) for arealkalkulasjoner, 
+    og transformerer resultatet til EPSG:4326 (WGS84) før det returneres som en GeoJSON-lignende dict."""
     gdf = gpd.GeoDataFrame.from_features(search_areas)
     gdf = remove_slivers(gdf, minArea)
     gdf = slice_polys(gdf, maxArea)
